@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+<!--Settings-->
+  <!--Behaviour-->
+  <string id="100">Основное</string>
+  <string id="101">Задержка прокрутки текста</string>
+  <string id="102">Режим прокрутки</string>
+  <string id="103">Время отображения навигационной информации (сек)</string>
+  <string id="104">Частота обновления дисплея (Гц)</string>
+  <string id="105">Перекодировать текст в кодировку минидисплея</string>
+
+  <!--Backlight-->
+  <string id="200">Подсветка</string>
+  <string id="201">Отключать подсветку при активном скринсейвере</string>
+  <string id="202">Отключать подсветку при выключении</string>
+
+  <!--Connection-->
+  <string id="300">Соединение</string>
+  <string id="301">LCDProc на другой машине</string>
+  <string id="302">IP-адрес машины с LCDd</string>
+  <string id="303">Порт LCDd</string>
+  <string id="304">Показывать сердцебиение</string>
+  <string id="305">Не уведомлять об ошибках подключения</string>
+
+  <!--Enum values-->
+  <string id="401">По вертикали</string>
+  <string id="402">По горизонтали</string>
+
+  <!--Notifications-->
+  <string id="500">Не удалось подключиться к LCDProc!</string>
+  <string id="501">Подключен к LCDProc!</string>
+  <string id="502">Настройки изменены!</string>
+  <string id="503">Внимание! Ошибки в LCD.xml или LCD.xml не найден!</string>
+  
+</strings>
