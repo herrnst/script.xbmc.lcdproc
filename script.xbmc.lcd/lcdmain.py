@@ -117,9 +117,9 @@ def process_lcd():
         g_lcdproc.SetBackLight(1)
         bBacklightDimmed = False
     
-      if mode == LCD_MODE.LCD_MODE_MUSIC:
+      if mode == LCD_MODE.LCD_MODE_MUSIC or mode == LCD_MODE.LCD_MODE_PVRRADIO:
         g_lcdproc.DisableOnPlayback(False, True)
-      elif mode == LCD_MODE.LCD_MODE_VIDEO:
+      elif mode == LCD_MODE.LCD_MODE_VIDEO or mode == LCD_MODE.LCD_MODE_PVRTV:
         g_lcdproc.DisableOnPlayback(True, False)
       else:
         g_lcdproc.DisableOnPlayback(False, False)
