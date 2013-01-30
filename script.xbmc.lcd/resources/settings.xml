@@ -9,6 +9,8 @@
   <category label="200">
     <setting id="dimonscreensaver" type="bool" label="201" default="false" />
     <setting id="dimonshutdown" type="bool" label="202" default="false" />
+    <setting id="dimonvideoplayback" type="bool" label="203" default="false" />
+    <setting id="dimonmusicplayback" type="bool" label="204" default="false" />
   </category>
   <category label="300">
     <setting id="remotelcdproc" type="bool" label="301" default="false" />

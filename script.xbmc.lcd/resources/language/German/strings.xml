@@ -12,6 +12,8 @@
   <string id="200">Beleuchtung</string>
   <string id="201">Hintergrundbeleuchtung ausschalten, wenn Bildschirmschoner aktiv</string>
   <string id="202">Hintergrundbeleuchtung beim Herunterfahren ausschalten</string>
+  <string id="203">Hintergrundbeleuchtung ausschalten, wenn ein Video abgespielt wird</string>
+  <string id="204">Hintergrundbeleuchtung ausschalten, wenn Musik abgespielt wird</string>
 
   <!--Connection-->
   <string id="300">Verbindung</string>

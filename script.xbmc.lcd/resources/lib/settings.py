@@ -42,6 +42,8 @@ global g_scrollmode
 global g_settingsChanged
 global g_dimonscreensaver
 global g_dimonshutdown
+global g_dimonvideoplayback
+global g_dimonmusicplayback
 global g_navtimeout
 global g_refreshrate
 global g_hideconnpopups
@@ -57,22 +59,26 @@ def settings_initGlobals():
   global g_settingsChanged
   global g_dimonscreensaver
   global g_dimonshutdown
+  global g_dimonvideoplayback
+  global g_dimonmusicplayback
   global g_navtimeout
   global g_refreshrate
   global g_hideconnpopups
 
-  g_hostip           = "127.0.0.1"
-  g_hostport         = 13666
-  g_timer            = time.time()   
-  g_heartbeat	     = False
-  g_scrolldelay      = 1
-  g_scrollmode       = "0"
-  g_settigsChanged   = True
-  g_dimonscreensaver = False
-  g_dimonshutdown    = False
-  g_navtimeout       = 3
-  g_refreshrate      = 1
-  g_hideconnpopups   = True
+  g_hostip             = "127.0.0.1"
+  g_hostport           = 13666
+  g_timer              = time.time()   
+  g_heartbeat	       = False
+  g_scrolldelay        = 1
+  g_scrollmode         = "0"
+  g_settigsChanged     = True
+  g_dimonscreensaver   = False
+  g_dimonshutdown      = False
+  g_dimonvideoplayback = False
+  g_dimonmusicplayback = False
+  g_navtimeout         = 3
+  g_refreshrate        = 1
+  g_hideconnpopups     = True
 
 def settings_getHostIp():
   global g_hostip
@@ -107,6 +113,14 @@ def settings_getDimOnScreensaver():
 def settings_getDimOnShutdown():
   global g_dimonshutdown
   return g_dimonshutdown
+
+def settings_getDimOnVideoPlayback():
+  global g_dimonvideoplayback
+  return g_dimonvideoplayback
+
+def settings_getDimOnMusicPlayback():
+  global g_dimonmusicplayback
+  return g_dimonmusicplayback
 
 def settings_getNavTimeout():
   global g_navtimeout
@@ -188,6 +202,8 @@ def settings_handleLcdSettings():
   global g_settingsChanged
   global g_dimonscreensaver
   global g_dimonshutdown
+  global g_dimonvideoplayback
+  global g_dimonmusicplayback
   global g_navtimeout
   global g_refreshrate
   global g_hideconnpopups
@@ -198,6 +214,8 @@ def settings_handleLcdSettings():
   scrollmode = __settings__.getSetting("scrollmode")
   dimonscreensaver = __settings__.getSetting("dimonscreensaver") == "true"
   dimonshutdown = __settings__.getSetting("dimonshutdown") == "true"
+  dimonvideoplayback = __settings__.getSetting("dimonvideoplayback") == "true"
+  dimonmusicplayback = __settings__.getSetting("dimonmusicplayback") == "true"
   navtimeout = int(float(string.replace(__settings__.getSetting("navtimeout"), ",", ".")))
   refreshrate = int(float(string.replace(__settings__.getSetting("refreshrate"), ",", ".")))
   hideconnpopups = __settings__.getSetting("hideconnpopups") == "true"
@@ -216,6 +234,14 @@ def settings_handleLcdSettings():
 
   if g_dimonshutdown != dimonshutdown:
     g_dimonshutdown = dimonshutdown
+    g_settingsChanged = True
+  
+  if g_dimonvideoplayback != dimonvideoplayback:
+    g_dimonvideoplayback = dimonvideoplayback
+    g_settingsChanged = True
+  
+  if g_dimonmusicplayback != dimonmusicplayback:
+    g_dimonmusicplayback = dimonmusicplayback
     g_settingsChanged = True
     
   if g_navtimeout != navtimeout:

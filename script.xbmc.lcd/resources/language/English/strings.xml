@@ -12,6 +12,8 @@
   <string id="200">Backlight</string>
   <string id="201">Dim backlight on screensaver</string>
   <string id="202">Dim backlight on shutdown</string>
+  <string id="203">Dim backlight on video playback</string>
+  <string id="204">Dim backlight on music playback</string>
 
   <!--Connection-->
   <string id="300">Connection</string>

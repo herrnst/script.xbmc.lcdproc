@@ -41,6 +41,7 @@ __lcdxml__ = xbmc.translatePath( os.path.join("special://masterprofile","LCD.xml
 
 from extraicons import *
 from infolabels import *
+from settings import *
 
 # global functions
 def log(loglevel, msg):
@@ -83,11 +84,10 @@ g_dictEmptyLineDescriptor['align'] = LCD_LINEALIGN.LCD_LINEALIGN_LEFT
 
 class LcdBase():
   def __init__(self):
-    self.m_disableOnPlay = DISABLE_ON_PLAY.DISABLE_ON_PLAY_NONE
     self.m_timeDisableOnPlayTimer = time.time()
     self.m_lcdMode = [None] * LCD_MODE.LCD_MODE_MAX
     self.m_extraBars = [None] * (LCD_EXTRABARS_MAX + 1)
-    self.m_bDimmedOnPlayback = False
+    self.m_bCurrentlyDimmed = False
     self.m_iDimOnPlayDelay = 0
     self.m_strInfoLabelEncoding = "utf-8" # http://forum.xbmc.org/showthread.php?tid=125492&pid=1045926#pid1045926
     self.m_strLCDEncoding = "iso-8859-1" # LCDproc wants iso-8859-1!
@@ -166,7 +166,6 @@ class LcdBase():
     pass
 
   def Initialize(self):
-    self.m_disableOnPlay = DISABLE_ON_PLAY.DISABLE_ON_PLAY_NONE
     if not self.LoadSkin(__lcdxml__):
       return False
 
@@ -191,15 +190,6 @@ class LcdBase():
       #PARSE LCD infos
       if element.tag == "lcd":
         # load our settings  
-
-        # disable on play
-        disableOnPlay = element.find("disableonplay")
-        if disableOnPlay != None:
-          self.m_disableOnPlay = DISABLE_ON_PLAY.DISABLE_ON_PLAY_NONE
-          if str(disableOnPlay.text).find("video") >= 0:
-            self.m_disableOnPlay += DISABLE_ON_PLAY.DISABLE_ON_PLAY_VIDEO
-          if str(disableOnPlay.text).find("music") >= 0:
-            self.m_disableOnPlay += DISABLE_ON_PLAY.DISABLE_ON_PLAY_MUSIC
 
         # disable on play delay
         self.m_iDimOnPlayDelay = 0
@@ -378,7 +368,6 @@ class LcdBase():
       self.m_lcdMode[mode].append(linedescriptor)
 
   def Reset(self):
-    self.m_disableOnPlay = DISABLE_ON_PLAY.DISABLE_ON_PLAY_NONE
     for i in range(0,LCD_MODE.LCD_MODE_MAX):
       self.m_lcdMode[i] = []			#clear list
 
@@ -431,25 +420,30 @@ class LcdBase():
       self.m_strSetLineCmds += self.m_cExtraIcons.GetOutputCommands()
 
     self.FlushLines()
-
-  def DisableOnPlayback(self, playingVideo, playingAudio):
-    # check if any dimming is requested and matching config
-    dodim = (playingVideo and (self.m_disableOnPlay & DISABLE_ON_PLAY.DISABLE_ON_PLAY_VIDEO)) or (playingAudio and (self.m_disableOnPlay & DISABLE_ON_PLAY.DISABLE_ON_PLAY_MUSIC))
-
-    # if dimrequest matches, check if pause is active (don't dim then)
-    if dodim:
-      dodim = dodim and not InfoLabel_IsPlayerPaused()
     
-    if dodim:
-      if not self.m_bDimmedOnPlayback:
+    self.SetBacklight(mode)
+
+  def SetBacklight(self, mode):
+    # dimming display in case screensaver is active or something is being played back (and not paused!)
+    if mode == LCD_MODE.LCD_MODE_SCREENSAVER and settings_getDimOnScreensaver():
+      doDim = True
+    elif (mode == LCD_MODE.LCD_MODE_MUSIC or mode == LCD_MODE.LCD_MODE_PVRRADIO) and settings_getDimOnMusicPlayback() and not InfoLabel_IsPlayerPaused():
+      doDim = True
+    elif (mode == LCD_MODE.LCD_MODE_VIDEO or mode == LCD_MODE.LCD_MODE_PVRTV) and settings_getDimOnVideoPlayback() and not InfoLabel_IsPlayerPaused():
+      doDim = True
+    else:
+      doDim = False  
+    
+    if doDim:
+      if not self.m_bCurrentlyDimmed:
         if (self.m_timeDisableOnPlayTimer + self.m_iDimOnPlayDelay) < time.time():
           self.SetBackLight(0)
-          self.m_bDimmedOnPlayback = True
+          self.m_bCurrentlyDimmed = True
     else:
       self.m_timeDisableOnPlayTimer = time.time()
-      if self.m_bDimmedOnPlayback:
+      if self.m_bCurrentlyDimmed:
         self.SetBackLight(1)
-        self.m_bDimmedOnPlayback = False
+        self.m_bCurrentlyDimmed = False
 
   def SetExtraInfoPlaying(self, isplaying, isvideo, isaudio):
     # make sure output scaling indicators are off when not playing and/or not playing video
