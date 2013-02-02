@@ -5,6 +5,7 @@
     <setting id="scrollmode" type="enum" label="102" lvalues="401|402" default="0" />
     <setting id="navtimeout" type="slider" label="103" option="int" default="2" range="1,10" />
     <setting id="refreshrate" type="slider" label="104" option="int" default="1" range="1,20" />
+    <setting id="nativecodepage" type="bool" label="105" default="false" />
   </category>
   <category label="200">
     <setting id="dimonscreensaver" type="bool" label="201" default="false" />

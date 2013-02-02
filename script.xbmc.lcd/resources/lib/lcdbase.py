@@ -91,8 +91,6 @@ class LcdBase():
     self.m_extraBars = [None] * (LCD_EXTRABARS_MAX + 1)
     self.m_bDimmedOnPlayback = False
     self.m_iDimOnPlayDelay = 0
-    self.m_strInfoLabelEncoding = "utf-8" # http://forum.xbmc.org/showthread.php?tid=125492&pid=1045926#pid1045926
-    self.m_strLCDEncoding = "iso-8859-1" # LCDproc wants iso-8859-1!
     self.m_strScrollSeparator = " "
     self.m_bProgressbarSurroundings = False
     self.m_iIconTextOffset = 2
@@ -435,8 +433,6 @@ class LcdBase():
           self.SetPlayingStateIcon()
 
         line = InfoLabel_GetInfoLabel(self.m_lcdMode[mode][inLine]['text'])
-        if self.m_strInfoLabelEncoding != self.m_strLCDEncoding:
-          line = line.decode(self.m_strInfoLabelEncoding).encode(self.m_strLCDEncoding, "replace")
         self.SetProgressBar(0, -1)
 
       if self.m_bAllowEmptyLines or len(line) > 0:

@@ -39,6 +39,7 @@ global g_timer
 global g_heartbeat
 global g_scrolldelay
 global g_scrollmode
+global g_nativecodepage
 global g_settingsChanged
 global g_dimonscreensaver
 global g_dimonshutdown
@@ -54,6 +55,7 @@ def settings_initGlobals():
   global g_heartbeat
   global g_scrolldelay
   global g_scrollmode
+  global g_nativecodepage
   global g_settingsChanged
   global g_dimonscreensaver
   global g_dimonshutdown
@@ -67,6 +69,7 @@ def settings_initGlobals():
   g_heartbeat	     = False
   g_scrolldelay      = 1
   g_scrollmode       = "0"
+  g_nativecodepage   = False
   g_settigsChanged   = True
   g_dimonscreensaver = False
   g_dimonshutdown    = False
@@ -93,6 +96,10 @@ def settings_getScrollDelay():
 def settings_getScrollMode():
   global g_scrollmode
   return g_scrollmode
+
+def settings_getNativecodepage():
+  global g_nativecodepage
+  return g_nativecodepage
 
 def settings_getLCDprocScrollMode():
   global g_scrollmode
@@ -184,6 +191,7 @@ def settings_handleNetworkSettings():
 def settings_handleLcdSettings():
   global g_scrolldelay
   global g_scrollmode
+  global g_nativecodepage
   global g_heartbeat
   global g_settingsChanged
   global g_dimonscreensaver
@@ -196,6 +204,7 @@ def settings_handleLcdSettings():
 
   scrolldelay = int(float(string.replace(__settings__.getSetting("scrolldelay"), ",", ".")))
   scrollmode = __settings__.getSetting("scrollmode")
+  nativecodepage = __settings__.getSetting("nativecodepage") == "true"
   dimonscreensaver = __settings__.getSetting("dimonscreensaver") == "true"
   dimonshutdown = __settings__.getSetting("dimonshutdown") == "true"
   navtimeout = int(float(string.replace(__settings__.getSetting("navtimeout"), ",", ".")))
@@ -208,6 +217,10 @@ def settings_handleLcdSettings():
 
   if g_scrollmode != scrollmode:
     g_scrollmode = scrollmode
+    g_settingsChanged = True
+
+  if g_nativecodepage != nativecodepage:
+    g_nativecodepage = nativecodepage
     g_settingsChanged = True
 
   if g_dimonscreensaver != dimonscreensaver:
