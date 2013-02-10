@@ -91,7 +91,9 @@ class LCDProc(LcdBase):
 
     try:
       # Send to server
-      self.tn.write(sendcmd)
+      sock = self.tn.get_socket()
+      if sock is not None:
+        sock.send(sendcmd)
     except:
       # Something bad happened, abort
       log(xbmc.LOGERROR, "SendCommand: Telnet exception - send")
