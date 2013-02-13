@@ -191,6 +191,10 @@ class LCDproc_extra_imon(LCDproc_extra_base):
     if icon == LCD_EXTRAICONS.LCD_EXTRAICON_PLAYING:
       self._SetIconStateDo(IMON_ICONS.ICON_SPINDISC, state)
 
+    elif icon == LCD_EXTRAICONS.LCD_EXTRAICON_PAUSE:
+      if state:
+        self._SetIconStateDo(IMON_ICONS.ICON_SPINDISC, False)
+
     # Icons used for "Modes" category
     elif icon == LCD_EXTRAICONS.LCD_EXTRAICON_MOVIE:
       self.m_iOutputValueIcons &= IMON_ICONS.ICON_CLEAR_TOPROW
