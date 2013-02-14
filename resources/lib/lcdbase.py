@@ -241,6 +241,13 @@ class LcdBase():
             else:
               self.m_iDimOnPlayDelay = intdelay
 
+        # charmap
+        charMap = element.find("charmap")
+        if charMap != None:
+          val = str(charMap.text)
+          if len(val) > 0:
+            self.m_strLCDEncoding = val
+
         # apply scrollseparator
         scrollSeparator = element.find("scrollseparator")
         if scrollSeparator != None:
@@ -436,7 +443,10 @@ class LcdBase():
 
         line = InfoLabel_GetInfoLabel(self.m_lcdMode[mode][inLine]['text'])
         if self.m_strInfoLabelEncoding != self.m_strLCDEncoding:
-          line = line.decode(self.m_strInfoLabelEncoding).encode(self.m_strLCDEncoding, "replace")
+          try:
+            line = line.decode(self.m_strInfoLabelEncoding).encode(self.m_strLCDEncoding, "replace")
+          except:
+            pass
         self.SetProgressBar(0, -1)
 
       if self.m_bAllowEmptyLines or len(line) > 0:
