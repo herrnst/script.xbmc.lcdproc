@@ -102,6 +102,9 @@ def InfoLabel_PlayingLiveTV():
 def InfoLabel_PlayingLiveRadio():
   return xbmc.getCondVisibility("PVR.IsPlayingRadio")
 
+def InfoLabel_GetSystemTime():
+  return xbmc.getInfoLabel("System.Time")
+
 def InfoLabel_GetPlayerTime():
   return xbmc.getInfoLabel("Player.Time")
 

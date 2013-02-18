@@ -407,10 +407,15 @@ class LCDProc(LcdBase):
       ret = InfoLabel_GetPlayerTime()
 
       if ret == "": # no usable timestring, e.g. not playing anything
-        if self.m_iBigDigits < 8: # return only h:m when display too small
-          ret = time.strftime("%X")[:5] # %X = locale-based currenttime
-        else:
-          ret = time.strftime("%X")[:8]
+        tm = InfoLabel_GetSystemTime() # get system time
+        tm = ''.join( re.findall( "[0-9:]+", tm ) ) # remove all characters except '0'..'9' and ':'
+        tm = tm.split( ':' ) # split H and M
+        if self.m_iBigDigits >= 2: # return only h - very small display :)
+          ret = ret + "%2s" % (tm[0])
+        if self.m_iBigDigits >= 5: # return h:m when display too small
+          ret = ret + ":%2s" % (tm[1])
+        if self.m_iBigDigits >= 8: # return h:m:s
+          ret = ret + ":%2s" % (time.strftime("%S"))
 
       return ret
 
@@ -434,6 +439,8 @@ class LCDProc(LcdBase):
         
         if strTimeString[i] == ":":
           self.m_strSetLineCmds += "widget_set xbmc lineBigDigit%i %i 10\n" % (iDigitCount, iOffset)
+        elif strTimeString[i] == " ":
+          self.m_strSetLineCmds += "widget_set xbmc lineBigDigit%i %i 11\n" % (iDigitCount, iOffset)
         else:
           self.m_strSetLineCmds += "widget_set xbmc lineBigDigit%i %i %s\n" % (iDigitCount, iOffset, strTimeString[i])
 
