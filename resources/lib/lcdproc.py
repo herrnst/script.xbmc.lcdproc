@@ -71,6 +71,7 @@ class LCDProc(LcdBase):
     self.m_iProgressBarLine = -1
     self.m_strIconName = "BLOCK_FILLED"
     self.m_iBigDigits = int(8) # 12:45:78 / colons count as digit
+    self.m_bCentric = False
     self.m_strSetLineCmds = ""
     self.m_cExtraIcons = None
     self.m_vPythonVersion = sys.version_info
@@ -301,10 +302,8 @@ class LCDProc(LcdBase):
       self.DetermineExtraSupport()
 
       # Set up BigNum values based on display geometry
-      if self.m_iColumns < 16:
-        self.m_iBigDigits = 5
-      elif self.m_iColumns < 20:
-        self.m_iBigDigits = 7
+      self.m_iBigDigits = self.m_iColumns / 7
+      self.m_iBigDigits = ( self.m_iColumns - self.m_iBigDigits ) / 3 + self.m_iBigDigits
 
     except:
       log(xbmc.LOGERROR,"Connect: Caught exception, aborting.")
@@ -416,6 +415,7 @@ class LCDProc(LcdBase):
           ret = ret + ":%2s" % (tm[1])
         if self.m_iBigDigits >= 8: # return h:m:s
           ret = ret + ":%2s" % (time.strftime("%S"))
+        ret = "#" + ret # add centric marker "#"
 
       return ret
 
@@ -429,6 +429,18 @@ class LCDProc(LcdBase):
       return
 
     iStringLength = int(len(strTimeString))
+
+    bCentric = False
+    if strTimeString[0] == "#":
+      strTimeString = strTimeString[1:] # remove marker "#"
+      iStringLength = iStringLength - 1
+      bCentric = True
+      iOffset  = 3 * ( iStringLength - iStringLength / 3 ) + iStringLength / 3
+      iOffset  = 1 + ( self.m_iColumns - iOffset ) / 2
+
+    if self.m_bCentric != bCentric:
+      self.m_bCentric = bCentric
+      self.ClearBigDigits()
 
     if iStringLength > self.m_iBigDigits:
       iStringOffset = len(strTimeString) - self.m_iBigDigits
