@@ -235,6 +235,7 @@ class LCDProc(LcdBase):
   def DetermineExtraSupport(self):
     rematch_imon = "SoundGraph iMON(.*)LCD"
     rematch_mdm166a = "Targa(.*)mdm166a"
+    rematch_imonvfd = "Soundgraph(.*)VFD"
 
     # Never cause script failure/interruption by this! This is totally optional!
     try:
@@ -258,6 +259,9 @@ class LCDProc(LcdBase):
         log(xbmc.LOGNOTICE, "Futaba/Targa USB mdm166a VFD detected")
         self.m_cExtraIcons = LCDproc_extra_mdm166a()
         self.m_cExtraIcons.Initialize()
+
+      elif re.match(rematch_imonvfd, reply):
+        log(xbmc.LOGNOTICE, "SoundGraph iMON IR/VFD detected")
 
     except:
       pass
@@ -510,7 +514,7 @@ class LCDProc(LcdBase):
     self.m_strSetLineCmds += "widget_set xbmc lineIcon%i 0 0 BLOCK_FILLED\n" % (iLine)
     self.m_strSetLineCmds += "widget_set xbmc lineProgress%i 0 0 0\n" % (iLine)
     self.m_strSetLineCmds += "widget_set xbmc lineScroller%i 1 %i %i %i m 1 \"\"\n" % (iLine, iLine, self.m_iColumns, iLine)
-    
+
   def SetLine(self, iLine, strLine, dictDescriptor, bForce):
     if self.m_bStop or self.tn.get_socket() == None:
       return

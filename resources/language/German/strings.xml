@@ -7,6 +7,8 @@
   <string id="32102">Scroll-Modus</string>
   <string id="32103">Anzeigedauer der Navigationsansicht (s)</string>
   <string id="32104">Display-Aktualisierungsrate (Hz)</string>
+  <string id="32105">Verwende alternativen Zeichensatz</string>
+  <string id="32106">Zeichensatz</string>
 
   <!--Backlight-->
   <string id="32200">Beleuchtung</string>
@@ -21,9 +23,17 @@
   <string id="32304">Heartbeatsymbol anzeigen</string>
   <string id="32305">Verbindungsfehler-Benachrichtigung verstecken</string>
 
-  <!--Enum values-->
+  <!--Enum values: Scroll mode-->
   <string id="32401">Durchlaufend</string>
   <string id="32402">Links/Rechts</string>
+
+  <!--Enum values: Charsets-->
+  <string id="32411">ISO8859-1 (Standard)</string>
+  <string id="32412">ISO8859-15</string>
+  <string id="32413">KOI8-R</string>
+  <string id="32414">CP1251</string>
+  <string id="32415">ISO8859-5</string>
+  <string id="32416">HD44780-ROM</string>
 
   <!--Notifications-->
   <string id="32500">Fehler beim Verbinden zu LCDproc!</string>

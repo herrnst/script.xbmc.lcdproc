@@ -41,8 +41,10 @@ __icon__ = sys.modules[ "__main__" ].__icon__
 __lcdxml__ = xbmc.translatePath( os.path.join("special://masterprofile","LCD.xml"))
 __lcddefaultxml__ = xbmc.translatePath( os.path.join(__cwd__, "resources", "LCD.xml.defaults"))
 
+from settings import *
 from extraicons import *
 from infolabels import *
+from charset_hd44780 import *
 
 # global functions
 def log(loglevel, msg):
@@ -108,6 +110,7 @@ class LcdBase():
     self.m_iOldAudioChannelsVar = 0
     self.m_bWasStopped = True
     self.m_bXMLWarningDisplayed = False
+    self.m_bHaveHD44780Charmap = False
 
 # @abstractmethod
   def _concrete_method(self):
@@ -195,6 +198,13 @@ class LcdBase():
     strXMLFile = __lcdxml__
     self.m_disableOnPlay = DISABLE_ON_PLAY.DISABLE_ON_PLAY_NONE
 
+    try:
+      log(xbmc.LOGDEBUG, "Registering HD44780-ROM pseudocodepage")
+      codecs.register(charset_hd44780)
+      self.m_bHaveHD44780Charmap = True
+    except:
+      log(xbmc.LOGERROR, "Failed to register custom HD44780-ROM pseudocodepage, expect problems with alternative charsets!")
+
     if not self.ManageLCDXML():
       strXMLFile = __lcddefaultxml__
 
@@ -202,6 +212,15 @@ class LcdBase():
       return False
 
     return True
+
+  def UpdateGUISettings(self):
+    str_charset = settings_getCharset()
+    if str_charset != self.m_strLCDEncoding:
+      if str_charset == "hd44780-hw" and not self.m_bHaveHD44780Charmap:
+        str_charset = "iso8859-1"
+
+      self.m_strLCDEncoding = str_charset
+      log(xbmc.LOGDEBUG, "Setting character encoding to %s" % (self.m_strLCDEncoding))
 
   def LoadSkin(self, xmlFile):
     self.Reset()

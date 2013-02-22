@@ -104,6 +104,10 @@ def process_lcd():
   while not xbmc.abortRequested:
     if handleConnectLCD():
       settingsChanged = settings_didSettingsChange()
+
+      if settingsChanged:
+        g_lcdproc.UpdateGUISettings()
+
       mode = getLcdMode()
 
       if mode == LCD_MODE.LCD_MODE_SCREENSAVER and settings_getDimOnScreensaver() and not bBacklightDimmed:
