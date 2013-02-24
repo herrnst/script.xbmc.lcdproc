@@ -53,6 +53,11 @@ MAX_BIGDIGITS = 20
 INIT_RETRY_INTERVAL = 2
 INIT_RETRY_INTERVAL_MAX = 60
 
+class BIG_CLOCK_MODE:
+  BIG_CLOCK_MODE_CLEAR       = 0
+  BIG_CLOCK_MODE_LEFT_ALIGN  = 1
+  BIG_CLOCK_MODE_CENTERED    = 2
+
 class LCDProc(LcdBase):
   def __init__(self):
     self.m_bStop        = True
@@ -71,7 +76,7 @@ class LCDProc(LcdBase):
     self.m_iProgressBarLine = -1
     self.m_strIconName = "BLOCK_FILLED"
     self.m_iBigDigits = int(8) # 12:45:78 / colons count as digit
-    self.m_bCentric = False
+    self.m_iBigMode = BIG_CLOCK_MODE.BIG_CLOCK_MODE_CLEAR
     self.m_strSetLineCmds = ""
     self.m_cExtraIcons = None
     self.m_vPythonVersion = sys.version_info
@@ -306,8 +311,14 @@ class LCDProc(LcdBase):
       self.DetermineExtraSupport()
 
       # Set up BigNum values based on display geometry
-      self.m_iBigDigits = self.m_iColumns / 7
-      self.m_iBigDigits = ( self.m_iColumns - self.m_iBigDigits ) / 3 + self.m_iBigDigits
+      if self.m_iColumns < 6:
+        self.m_iBigDigits = 0 # No clock
+      elif self.m_iColumns < 13:
+        self.m_iBigDigits = 2 # HH
+      elif self.m_iColumns < 20:
+        self.m_iBigDigits = 5 # HH:MM
+      else:
+        self.m_iBigDigits = 8 # HH:MM:SS
 
     except:
       log(xbmc.LOGERROR,"Connect: Caught exception, aborting.")
@@ -433,21 +444,25 @@ class LCDProc(LcdBase):
       return
 
     iStringLength = int(len(strTimeString))
+    iBigMode = BIG_CLOCK_MODE.BIG_CLOCK_MODE_LEFT_ALIGN
 
-    bCentric = False
     if strTimeString[0] == "#":
       strTimeString = strTimeString[1:] # remove marker "#"
       iStringLength = iStringLength - 1
-      bCentric = True
-      iOffset  = 3 * ( iStringLength - iStringLength / 3 ) + iStringLength / 3
-      iOffset  = 1 + ( self.m_iColumns - iOffset ) / 2
-
-    if self.m_bCentric != bCentric:
-      self.m_bCentric = bCentric
-      self.ClearBigDigits()
+      iBigMode = BIG_CLOCK_MODE.BIG_CLOCK_MODE_CENTERED
 
     if iStringLength > self.m_iBigDigits:
       iStringOffset = len(strTimeString) - self.m_iBigDigits
+      iBigMode = BIG_CLOCK_MODE.BIG_CLOCK_MODE_LEFT_ALIGN
+
+    if iBigMode == BIG_CLOCK_MODE.BIG_CLOCK_MODE_CENTERED:
+      iOffset  = 3 * ( iStringLength - iStringLength / 3 ) + iStringLength / 3
+      iOffset  = 1 + ( self.m_iColumns - iOffset ) / 2
+
+    if self.m_iBigMode != iBigMode:
+      if self.m_iBigMode != BIG_CLOCK_MODE.BIG_CLOCK_MODE_CLEAR:
+        self.ClearBigDigits()
+      self.m_iBigMode = iBigMode
 
     for i in range(int(iStringOffset), int(iStringLength)):
       if self.m_strDigits[iDigitCount] != strTimeString[i] or bForceUpdate:
@@ -499,6 +514,8 @@ class LCDProc(LcdBase):
     return int(self.m_iRows)
 
   def ClearBigDigits(self):
+    self.m_iBigMode = BIG_CLOCK_MODE.BIG_CLOCK_MODE_CLEAR
+
     for i in range(1,int(self.m_iBigDigits + 1)):
       # Clear Digit
       self.m_strSetLineCmds += "widget_set xbmc lineBigDigit" + str(i) + " 0 0\n"
