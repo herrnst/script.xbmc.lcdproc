@@ -315,8 +315,10 @@ class LCDProc(LcdBase):
         self.m_iBigDigits = 0 # No clock
       elif self.m_iColumns < 13:
         self.m_iBigDigits = 2 # HH
-      elif self.m_iColumns < 20:
+      elif self.m_iColumns < 16: # Hack! Should be 17, but use 16 for imonlcd
         self.m_iBigDigits = 5 # HH:MM
+      elif self.m_iColumns < 20:
+        self.m_iBigDigits = 7 # H:MM:SS on play, HH:MM on clock
       else:
         self.m_iBigDigits = 8 # HH:MM:SS
 
