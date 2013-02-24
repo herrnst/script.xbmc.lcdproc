@@ -199,9 +199,10 @@ class LcdBase():
     self.m_disableOnPlay = DISABLE_ON_PLAY.DISABLE_ON_PLAY_NONE
 
     try:
-      log(xbmc.LOGDEBUG, "Registering HD44780-ROM pseudocodepage")
-      codecs.register(charset_hd44780)
-      self.m_bHaveHD44780Charmap = True
+      if not self.m_bHaveHD44780Charmap:
+        log(xbmc.LOGDEBUG, "Registering HD44780-ROM pseudocodepage")
+        codecs.register(charset_hd44780)
+        self.m_bHaveHD44780Charmap = True
     except:
       log(xbmc.LOGERROR, "Failed to register custom HD44780-ROM pseudocodepage, expect problems with alternative charsets!")
 

@@ -1,4 +1,7 @@
 1.3.0 / 2.3.0
+- Alternate charmap selection and HD44780/iMON ROM charset support
+1.2.1 / 2.2.1
+- Bugfixes / Credits
 1.2.0 / 2.2.0
 - Maintain versions for Eden (1.x.x) and Frodo+ (2.x.x)
 - Support for extra stuff (icons, bars) on supporting displays
