@@ -58,6 +58,12 @@ class WINDOW_IDS:
   WINDOW_DIALOG_VOLUME_BAR     = 10104
   WINDOW_DIALOG_KAI_TOAST      = 10107
   
+g_StreamPrefixes = [ \
+ "http", "https", "tcp",   "udp",    "rtp",  \
+ "sdp",  "mms",   "mmst",  "mmsh",   "rtsp", \
+ "rtmp", "rtmpt", "rtmpe", "rtmpte", "rtmps" \
+]
+
 global g_InfoLabel_oldMenu
 global g_InfoLabel_oldSubMenu
 global g_InfoLabel_navTimer
@@ -96,6 +102,9 @@ def InfoLabel_PlayingLiveTV():
 def InfoLabel_PlayingLiveRadio():
   return xbmc.getCondVisibility("PVR.IsPlayingRadio")
 
+def InfoLabel_GetSystemTime():
+  return xbmc.getInfoLabel("System.Time")
+
 def InfoLabel_GetPlayerTime():
   return xbmc.getInfoLabel("Player.Time")
 
@@ -122,6 +131,14 @@ def InfoLabel_IsPlayingAny():
           InfoLabel_IsPlayerPaused() |
           InfoLabel_IsPlayerForwarding() |
           InfoLabel_IsPlayerRewinding())
+
+def InfoLabel_IsInternetStream():
+  fname = xbmc.getInfoLabel("Player.Filenameandpath")
+  for prefix in g_StreamPrefixes:
+    if fname.find(prefix + "://") == 0:
+      return True
+
+  return False
 
 def InfoLabel_IsPassthroughAudio():
   return xbmc.getCondVisibility("Player.Passthrough")

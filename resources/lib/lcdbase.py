@@ -50,6 +50,11 @@ from charset_hd44780 import *
 def log(loglevel, msg):
   xbmc.log("### [%s] - %s" % (__scriptname__,msg,),level=loglevel ) 
 
+class HIDE_EXTRA_VOLUME:
+  HIDE_EXTRA_VOLUME_NONE = 0
+  HIDE_EXTRA_VOLUME_NAV  = 1
+  HIDE_EXTRA_VOLUME_PLAY = 2
+
 class LCD_MODE:
   LCD_MODE_GENERAL     = 0
   LCD_MODE_MUSIC       = 1
@@ -81,6 +86,7 @@ g_dictEmptyLineDescriptor['align'] = LCD_LINEALIGN.LCD_LINEALIGN_LEFT
 
 class LcdBase():
   def __init__(self):
+    self.m_hideExtraVolume = HIDE_EXTRA_VOLUME.HIDE_EXTRA_VOLUME_NONE
     self.m_timeDisableOnPlayTimer = time.time()
     self.m_lcdMode = [None] * LCD_MODE.LCD_MODE_MAX
     self.m_extraBars = [None] * (LCD_EXTRABARS_MAX + 1)
@@ -234,6 +240,14 @@ class LcdBase():
       #PARSE LCD infos
       if element.tag == "lcd":
         # load our settings  
+
+        # hide extra volume bar
+        hideExtraVolume = element.find("hideextravolume")
+        if hideExtraVolume != None:
+          if str(hideExtraVolume.text).find("nav") >= 0:
+            self.m_hideExtraVolume += HIDE_EXTRA_VOLUME.HIDE_EXTRA_VOLUME_NAV
+          if str(hideExtraVolume.text).find("play") >= 0:
+            self.m_hideExtraVolume += HIDE_EXTRA_VOLUME.HIDE_EXTRA_VOLUME_PLAY
 
         # apply scrollseparator
         scrollSeparator = element.find("scrollseparator")
@@ -500,6 +514,8 @@ class LcdBase():
 
         if InfoLabel_PlayingLiveTV():
           self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_TV, True)
+        elif InfoLabel_IsInternetStream():
+          self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_WEBCASTING, True)
         else:
           self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MOVIE, True)
 
@@ -514,7 +530,10 @@ class LcdBase():
           self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_OUTFIT, True)
 
       elif isaudio:
-        self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MUSIC, True)
+        if InfoLabel_IsInternetStream():
+          self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_WEBCASTING, True)
+        else:
+          self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MUSIC, True)
 
     else: # not playing
 
@@ -659,7 +678,7 @@ class LcdBase():
       self.m_cExtraIcons.ClearIconStates(LCD_EXTRAICONCATEGORIES.LCD_ICONCAT_CODECS)
       self.m_bWasStopped = True
 
-  def SetExtraInfoGeneric(self, ispaused):
+  def SetExtraInfoGeneric(self, ispaused, isvolume):
     if InfoLabel_GetVolumePercent() == 0.0:
       self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MUTE, True)
     else:
@@ -695,7 +714,7 @@ class LcdBase():
     else:
       self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_TIME, False)
 
-    if InfoLabel_WindowIsActive(WINDOW_IDS.WINDOW_DIALOG_VOLUME_BAR):
+    if isvolume:
       self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_VOLUME, True)
     else:
       self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_VOLUME, False)
@@ -705,7 +724,19 @@ class LcdBase():
     else:
       self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_ALARM, False)
 
-  def SetExtraInfoBars(self, isplaying):
+  def SetExtraInfoBars(self, isplaying, isvolume):
+    volume = -1
+    while True:
+      if isvolume:
+        break
+      if isplaying and (self.m_hideExtraVolume & HIDE_EXTRA_VOLUME.HIDE_EXTRA_VOLUME_PLAY):
+        volume = 0
+      if not isplaying and (self.m_hideExtraVolume & HIDE_EXTRA_VOLUME.HIDE_EXTRA_VOLUME_NAV):
+        volume = 0
+      break
+    if volume < 0:
+      volume = InfoLabel_GetVolumePercent()
+
     for i in range(1, LCD_EXTRABARS_MAX + 1):
       if self.m_extraBars[i] == "progress":
         if isplaying:
@@ -713,7 +744,7 @@ class LcdBase():
         else:
           self.m_cExtraIcons.SetBar(i, 0)
       elif self.m_extraBars[i] == "volume":
-        self.m_cExtraIcons.SetBar(i, InfoLabel_GetVolumePercent())
+        self.m_cExtraIcons.SetBar(i, volume)
       elif self.m_extraBars[i] == "menu":
         if isplaying:
           self.m_cExtraIcons.SetBar(i, 0)
@@ -729,9 +760,11 @@ class LcdBase():
     bIsVideo = InfoLabel_PlayingVideo()
     bIsAudio = InfoLabel_PlayingAudio()
 
+    bIsVolume = InfoLabel_WindowIsActive(WINDOW_IDS.WINDOW_DIALOG_VOLUME_BAR)
+
     self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_PLAYING, bPlaying)
 
     self.SetExtraInfoPlaying(bPlaying, bIsVideo, bIsAudio)
     self.SetExtraInfoCodecs(bPlaying, bIsVideo, bIsAudio)
-    self.SetExtraInfoGeneric(bPaused)
-    self.SetExtraInfoBars(bPlaying)
+    self.SetExtraInfoGeneric(bPaused, bIsVolume)
+    self.SetExtraInfoBars(bPlaying, bIsVolume)
