@@ -500,6 +500,8 @@ class LcdBase():
 
         if InfoLabel_PlayingLiveTV():
           self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_TV, True)
+        elif InfoLabel_IsInternetStream():
+          self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_WEBCASTING, True)
         else:
           self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MOVIE, True)
 
@@ -514,7 +516,10 @@ class LcdBase():
           self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_OUTFIT, True)
 
       elif isaudio:
-        self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MUSIC, True)
+        if InfoLabel_IsInternetStream():
+          self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_WEBCASTING, True)
+        else:
+          self.m_cExtraIcons.SetIconState(LCD_EXTRAICONS.LCD_EXTRAICON_MUSIC, True)
 
     else: # not playing
 
