@@ -9,7 +9,12 @@
     <setting id="charset" enable="eq(-1,true)" type="enum" label="32106" lvalues="32411|32412|32413|32414|32415|32416" default="0" subsetting="true"/>
   </category>
   <category label="32200">
-    <setting id="dimonscreensaver" type="bool" label="32201" default="false" />
+    <setting label="32206" type="lsep" />
+    <setting id="dimonvideoplayback" type="bool" label="32203" default="false" subsetting="true" />
+    <setting id="dimonmusicplayback" type="bool" label="32204" default="false" subsetting="true" />
+    <setting id="dimonscreensaver" type="bool" label="32201" default="false" subsetting="true" />
+    <setting id="dimdelay" type="slider" label="32205" default="0" range="0,30" subsetting="true" />
+    <setting id="sep2" type="sep" />
     <setting id="dimonshutdown" type="bool" label="32202" default="false" />
   </category>
   <category label="32300">

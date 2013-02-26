@@ -1,5 +1,6 @@
 1.3.0 / 2.3.0
 - Alternate charmap selection and HD44780/iMON ROM charset support
+- Refactored backlight dimming handling and configuration via GUI settings
 1.2.1 / 2.2.1
 - Bugfixes / Credits
 1.2.0 / 2.2.0

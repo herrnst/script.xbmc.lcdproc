@@ -12,8 +12,12 @@
 
   <!--Backlight-->
   <string id="32200">Beleuchtung</string>
-  <string id="32201">Hintergrundbeleuchtung ausschalten, wenn Bildschirmschoner aktiv</string>
-  <string id="32202">Hintergrundbeleuchtung beim Herunterfahren ausschalten</string>
+  <string id="32201">wenn Bildschirmschoner aktiv</string>
+  <string id="32202">Beim Herunterfahren abdunkeln/abschalten</string>
+  <string id="32203">während Video/LiveTV-Wiedergabe</string>
+  <string id="32204">während Musik/Radio-Wiedergabe</string>
+  <string id="32205">Verzögerung (s)</string>
+  <string id="32206">Abdunkeln/Abschalten...</string>
 
   <!--Connection-->
   <string id="32300">Verbindung</string>
