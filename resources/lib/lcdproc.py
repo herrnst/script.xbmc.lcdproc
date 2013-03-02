@@ -305,10 +305,14 @@ class LCDProc(LcdBase):
       self.DetermineExtraSupport()
 
       # Set up BigNum values based on display geometry
-      if self.m_iColumns < 16:
-        self.m_iBigDigits = 5
+      if self.m_iColumns < 13:
+        self.m_iBigDigits = 0 # No clock
+      elif self.m_iColumns < 16: # Hack: should be 17, but use 16 for imonlcd
+        self.m_iBigDigits = 5 # HH:MM
       elif self.m_iColumns < 20:
-        self.m_iBigDigits = 7
+        self.m_iBigDigits = 7 # H:MM:SS on play, HH:MM on clock
+      else:
+        self.m_iBigDigits = 8 # HH:MM:SS
 
     except:
       log(xbmc.LOGERROR,"Connect: Caught exception, aborting.")
@@ -411,10 +415,16 @@ class LCDProc(LcdBase):
       ret = InfoLabel_GetPlayerTime()
 
       if ret == "": # no usable timestring, e.g. not playing anything
-        if self.m_iBigDigits < 8: # return only h:m when display too small
-          ret = time.strftime("%X")[:5] # %X = locale-based currenttime
+        ret = InfoLabel_GetSystemTime("hh:mm:ss")
+        ret = ret.split(" ")[0] # Hack: remove AM/PM
+        ret = "0" + ret
+
+        if self.m_iBigDigits >= 8: # return h:m:s
+          ret = ret[-8:]
+        elif self.m_iBigDigits >= 5: # return h:m when display too small
+          ret = ret[-8:-3]
         else:
-          ret = time.strftime("%X")[:8]
+          ret = ""
 
       return ret
 
@@ -438,8 +448,10 @@ class LCDProc(LcdBase):
         
         if strTimeString[i] == ":":
           self.m_strSetLineCmds += "widget_set xbmc lineBigDigit%i %i 10\n" % (iDigitCount, iOffset)
-        else:
+        elif strTimeString[i].isdigit():
           self.m_strSetLineCmds += "widget_set xbmc lineBigDigit%i %i %s\n" % (iDigitCount, iOffset, strTimeString[i])
+        else:
+          self.m_strSetLineCmds += "widget_set xbmc lineBigDigit" + str(iDigitCount) + " 0 0\n"
 
       if strTimeString[i] == ":":
         iOffset += 1
@@ -448,10 +460,10 @@ class LCDProc(LcdBase):
 
       iDigitCount += 1
 
-    for j in range(i + 2, int(self.m_iBigDigits + 1)):
+    while iDigitCount <= self.m_iBigDigits:
       if self.m_strDigits[iDigitCount] != "" or bForceUpdate:
         self.m_strDigits[iDigitCount] = ""
-        self.m_strSetLineCmds += "widget_set xbmc lineBigDigit" + str(j) + " 0 0\n"
+        self.m_strSetLineCmds += "widget_set xbmc lineBigDigit" + str(iDigitCount) + " 0 0\n"
       
       iDigitCount += 1
 
