@@ -84,6 +84,7 @@ class LcdBase():
     self.m_timeDisableOnPlayTimer = time.time()
     self.m_lcdMode = [None] * LCD_MODE.LCD_MODE_MAX
     self.m_extraBars = [None] * (LCD_EXTRABARS_MAX + 1)
+    self.m_bCenterBigDigits = False
     self.m_bCurrentlyDimmed = False
     self.m_iDimOnPlayDelay = 0
     self.m_strInfoLabelEncoding = "utf-8" # http://forum.xbmc.org/showthread.php?tid=125492&pid=1045926#pid1045926
@@ -276,6 +277,11 @@ class LcdBase():
         if allowemptylines != None:
           if str(allowemptylines.text).lower() in ["on", "true"]:
             self.m_bAllowEmptyLines = True
+
+        centerbigdigits = element.find("centerbigdigits")
+        if centerbigdigits != None:
+          if str(centerbigdigits.text).lower() in ["on", "true"]:
+            self.m_bCenterBigDigits = True
 
         # check for disableplayindicatoronpause setting
         self.m_bDisablePlayIndicatorOnPause = False

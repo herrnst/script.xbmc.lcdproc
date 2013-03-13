@@ -71,6 +71,7 @@ class LCDProc(LcdBase):
     self.m_iProgressBarLine = -1
     self.m_strIconName = "BLOCK_FILLED"
     self.m_iBigDigits = int(8) # 12:45:78 / colons count as digit
+    self.m_iOffset = 1
     self.m_strSetLineCmds = ""
     self.m_cExtraIcons = None
     self.m_vPythonVersion = sys.version_info
@@ -438,8 +439,18 @@ class LCDProc(LcdBase):
 
     iStringLength = int(len(strTimeString))
 
+    if self.m_bCenterBigDigits:
+      iColons = strTimeString.count(":")
+      iWidth  = 3 * (iStringLength - iColons) + iColons
+      iOffset = 1 + max(self.m_iColumns - iWidth, 0) / 2
+
     if iStringLength > self.m_iBigDigits:
       iStringOffset = len(strTimeString) - self.m_iBigDigits
+      iOffset = 1;
+
+    if self.m_iOffset != iOffset:
+      self.ClearBigDigits()
+      self.m_iOffset = iOffset
 
     for i in range(int(iStringOffset), int(iStringLength)):
       if self.m_strDigits[iDigitCount] != strTimeString[i] or bForceUpdate:
