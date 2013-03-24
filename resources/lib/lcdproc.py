@@ -94,7 +94,7 @@ class LCDProc(LcdBase):
     try:
       # Send to server via raw socket to prevent telnetlib tampering with
       # certain chars (especially 0xFF -> telnet IAC)
-      self.tnsocket.send(sendcmd)
+      self.tnsocket.sendall(sendcmd)
     except:
       # Something bad happened, abort
       log(xbmc.LOGERROR, "SendCommand: Telnet exception - send")
