@@ -108,6 +108,12 @@ def InfoLabel_WindowIsActive(WindowID):
 def InfoLabel_PlayingVideo():
   return InfoLabel_GetBool("Player.HasVideo")
 
+def InfoLabel_PlayingTVShow():
+  if InfoLabel_PlayingVideo() and len(InfoLabel_GetInfoLabel("VideoPlayer.TVShowTitle")): 
+    return True
+  else:
+    return False
+
 def InfoLabel_PlayingAudio():
   return InfoLabel_GetBool("Player.HasAudio")
 

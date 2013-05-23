@@ -79,6 +79,7 @@ def getLcdMode():
   navActive = InfoLabel_IsNavigationActive()
   screenSaver = InfoLabel_IsScreenSaverActive()
   playingVideo = InfoLabel_PlayingVideo()
+  playingTVShow = InfoLabel_PlayingTVShow()
   playingMusic = InfoLabel_PlayingAudio()
   playingPVRTV = InfoLabel_PlayingLiveTV()
   playingPVRRadio = InfoLabel_PlayingLiveRadio()
@@ -91,6 +92,8 @@ def getLcdMode():
     ret = LCD_MODE.LCD_MODE_PVRTV
   elif playingPVRRadio:
     ret = LCD_MODE.LCD_MODE_PVRRADIO
+  elif playingTVShow:
+    ret = LCD_MODE.LCD_MODE_TVSHOW
   elif playingVideo:
     ret = LCD_MODE.LCD_MODE_VIDEO
   elif playingMusic:

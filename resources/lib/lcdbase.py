@@ -54,12 +54,13 @@ class LCD_MODE:
   LCD_MODE_GENERAL     = 0
   LCD_MODE_MUSIC       = 1
   LCD_MODE_VIDEO       = 2
-  LCD_MODE_NAVIGATION  = 3
-  LCD_MODE_SCREENSAVER = 4
-  LCD_MODE_XBE_LAUNCH  = 5
-  LCD_MODE_PVRTV       = 6
-  LCD_MODE_PVRRADIO    = 7
-  LCD_MODE_MAX         = 8
+  LCD_MODE_TVSHOW      = 3
+  LCD_MODE_NAVIGATION  = 4
+  LCD_MODE_SCREENSAVER = 5
+  LCD_MODE_XBE_LAUNCH  = 6
+  LCD_MODE_PVRTV       = 7
+  LCD_MODE_PVRRADIO    = 8
+  LCD_MODE_MAX         = 9
 
 class LCD_LINETYPE:
   LCD_LINETYPE_TEXT      = "text"
@@ -314,6 +315,9 @@ class LcdBase():
         tmpMode = element.find("video")
         self.LoadMode(tmpMode, LCD_MODE.LCD_MODE_VIDEO)
 
+        tmpMode = element.find("tvshow")
+        self.LoadMode(tmpMode, LCD_MODE.LCD_MODE_TVSHOW)
+
         tmpMode = element.find("general")
         self.LoadMode(tmpMode, LCD_MODE.LCD_MODE_GENERAL)
 
@@ -474,7 +478,7 @@ class LcdBase():
     return (mode == LCD_MODE.LCD_MODE_MUSIC or mode == LCD_MODE.LCD_MODE_PVRRADIO) and settings_getDimOnMusicPlayback()
 
   def DoDimOnVideo(self, mode):
-    return (mode == LCD_MODE.LCD_MODE_VIDEO or mode == LCD_MODE.LCD_MODE_PVRTV) and settings_getDimOnVideoPlayback()
+    return (mode == LCD_MODE.LCD_MODE_VIDEO or LCD_MODE.LCD_MODE_TVSHOW or mode == LCD_MODE.LCD_MODE_PVRTV) and settings_getDimOnVideoPlayback()
 
   def DoDimOnScreensaver(self, mode):
     return (mode == LCD_MODE.LCD_MODE_SCREENSAVER) and settings_getDimOnScreensaver()
