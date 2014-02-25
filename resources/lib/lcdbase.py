@@ -453,36 +453,6 @@ class LcdBase():
 
     self.CloseSocket()
 
-  def FilterLine(self, line):
-
-    # run through the string, searching for formatting tags:
-    # [B] or [/B], [I] or [/I], [COLOR ffab007f] or [/COLOR]
-    # [CAPS <option>] or [/CAPS] => remove from string
-
-    filteredline = ""
-    pos = 0
-    beg = line.find("[")
-    if beg == -1:
-      return line
-    else:
-      while beg != -1:
-        filteredline += line[pos:beg]
-
-        end = line.find("]", beg + 1)
-
-        if end == -1:
-          filteredline += line[beg:len(line)]
-          beg = -1
-        elif end + 1 != len(line):
-          pos = end + 1
-          beg = line.find("[", pos)
-          if beg == -1:
-            filteredline += line[pos:len(line)]
-        else:
-          beg = -1
- 
-    return filteredline
-
   def Render(self, mode, bForce):
     outLine = 0
     inLine = 0
@@ -502,8 +472,10 @@ class LcdBase():
 
         srcline = InfoLabel_GetInfoLabel(self.m_lcdMode[mode][inLine]['text'])
 
+        # remove any formatting tags from info label: for example
+        # [B], [/B], [I], [/], [COLOR ffab007f], [/COLOR], ...
         if len(srcline) > 0:
-          srcline = self.FilterLine(srcline)
+          srcline = re.sub('\[.*?\]', '', srcline)
 
         if self.m_strInfoLabelEncoding != self.m_strLCDEncoding:
           try:
