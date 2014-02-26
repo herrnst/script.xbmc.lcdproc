@@ -471,6 +471,12 @@ class LcdBase():
           self.SetPlayingStateIcon()
 
         srcline = InfoLabel_GetInfoLabel(self.m_lcdMode[mode][inLine]['text'])
+
+        # remove any formatting tags from info label: for example
+        # [B], [/B], [I], [/], [COLOR ffab007f], [/COLOR], ...
+        if len(srcline) > 0:
+          srcline = re.sub('\[.*?\]', '', srcline)
+
         if self.m_strInfoLabelEncoding != self.m_strLCDEncoding:
           try:
             line = srcline.decode(self.m_strInfoLabelEncoding).encode(self.m_strLCDEncoding, "replace")
