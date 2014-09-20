@@ -44,7 +44,13 @@
       <line>$INFO[VideoPlayer.Title]</line>
       <line>$INFO[LCD.ProgressBar]</line>
       <line>Freemem: $INFO[System.FreeMemory]</line>
-   </tvshow> 
+   </tvshow>
+   <musicvideo>
+      <line>$INFO[LCD.PlayIcon] $INFO[Player.Time]/$INFO[Player.Duration]</line>
+      <line>$INFO[VideoPlayer.Title]</line>
+      <line>$INFO[VideoPlayer.Artist]</line>
+      <line>$INFO[VideoPlayer.Album] ($INFO[VideoPlayer.Year])</line>
+   </musicvideo>
    <general>
       <line>XBMC running...</line>
       <line>$INFO[System.Time] $INFO[System.Date]</line>
