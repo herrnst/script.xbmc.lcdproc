@@ -176,6 +176,8 @@ def settings_getCharset():
       ret = "hd44780-a00"
     elif g_charset == "6":
       ret = "hd44780-a02"
+    elif g_charset == "7":
+      ret = "cp852"
     else:
       ret = "iso-8859-1"
 

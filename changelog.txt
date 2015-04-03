@@ -1,3 +1,5 @@
+2.6.1
+- Support for Code Page 852 (Central Europe)
 2.6.0 (Helix)
 - Initial version for Kodi Helix
 - Fix retrieval of application mute state

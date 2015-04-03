@@ -40,6 +40,7 @@
   <string id="32415">ISO8859-5</string>
   <string id="32416">HD44780-ROM A00</string>
   <string id="32417">HD44780-ROM A02</string>
+  <string id="32418">CP852 Central Europe</string>
 
   <!--Notifications-->
   <string id="32500">Fehler beim Verbinden zu LCDproc!</string>
