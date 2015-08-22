@@ -6,6 +6,12 @@
 
    <!-- progressbarsurroundings: put progress bars in square brackets (on/off) -->
    <!--progressbarsurroundings>off</progressbarsurroundings-->
+   
+   <!-- progressbartime: put time Elapsed/Total before and after progress bars (on/off) -->
+   <!--progressbartime>on</progressbartime-->
+   
+   <!-- progressbarblank: character to use as non-filled progressbar -->
+   <!--progressbarblank>-</progressbarblank-->
 
    <!-- icontextoffset: offset for text displayed after any play/pause icons -->
    <!--icontextoffset>2</icontextoffset-->

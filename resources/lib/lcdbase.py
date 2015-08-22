@@ -269,6 +269,22 @@ class LcdBase():
           if str(progressbarSurroundings.text).lower() in ["on", "true"]:
             self.m_bProgressbarSurroundings = True
 
+        # check for progressbartime setting
+        self.m_bProgressbarTime = False
+        
+        progressbarTime = element.find("progressbartime")
+        if progressbarTime != None:
+          if str(progressbarTime.text).lower() in ["on", "true"]:
+            self.m_bProgressbarTime = True
+
+        # apply progressbarblank
+        self.m_bProgressbarBlank = " "
+        
+        progressbarBlank = element.find("progressbarblank")
+        if progressbarBlank != None:
+          self.m_bProgressbarBlank = str(progressbarBlank.text)[0]
+        
+            
         # icontext offset setting
         self.m_iIconTextOffset = 2
 
