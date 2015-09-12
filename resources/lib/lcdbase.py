@@ -62,10 +62,11 @@ class LCD_MODE:
   LCD_MODE_MAX         = 9
 
 class LCD_LINETYPE:
-  LCD_LINETYPE_TEXT      = "text"
-  LCD_LINETYPE_PROGRESS  = "progressbar"
-  LCD_LINETYPE_ICONTEXT  = "icontext"
-  LCD_LINETYPE_BIGSCREEN = "bigscreen"
+  LCD_LINETYPE_TEXT         = "text"
+  LCD_LINETYPE_PROGRESS     = "progressbar"
+  LCD_LINETYPE_PROGRESSTIME = "progresstime"
+  LCD_LINETYPE_ICONTEXT     = "icontext"
+  LCD_LINETYPE_BIGSCREEN    = "bigscreen"
 
 class LCD_LINEALIGN:
   LCD_LINEALIGN_LEFT   = 0
@@ -268,6 +269,13 @@ class LcdBase():
         if progressbarSurroundings != None:
           if str(progressbarSurroundings.text).lower() in ["on", "true"]:
             self.m_bProgressbarSurroundings = True
+            
+        # apply progressbarblank
+        self.m_bProgressbarBlank = " "
+        
+        progressbarBlank = element.find("progressbarblank")
+        if progressbarBlank != None:
+          self.m_bProgressbarBlank = str(progressbarBlank.text)[0]
 
         # icontext offset setting
         self.m_iIconTextOffset = 2
@@ -408,13 +416,19 @@ class LcdBase():
       # progressbar line if InfoLabel exists
       if linetext.lower().find("$info[lcd.progressbar]") >= 0:
         linedescriptor['type'] = LCD_LINETYPE.LCD_LINETYPE_PROGRESS
+        linedescriptor['text'] = self.m_bProgressbarBlank * int(self.m_iColumns)
         linedescriptor['endx'] = int(self.m_iCellWidth) * int(self.m_iColumns)
 
         if self.m_bProgressbarSurroundings == True:
           linedescriptor['startx'] = int(2)
-          linedescriptor['text'] = "[" + " " * (self.m_iColumns - 2) + "]"
+          linedescriptor['text'] = "[" + self.m_bProgressbarBlank * (self.m_iColumns - 2) + "]"
           linedescriptor['endx'] = int(self.m_iCellWidth) * (int(self.GetColumns()) - 2)
 
+      # progresstime line if InfoLabel exists
+      elif linetext.lower().find("$info[lcd.progresstime]") >= 0:
+        linedescriptor['type'] = LCD_LINETYPE.LCD_LINETYPE_PROGRESSTIME
+        linedescriptor['endx'] = int(self.m_iCellWidth) * int(self.m_iColumns)
+      
       # textline with icon in front
       elif linetext.lower().find("$info[lcd.playicon]") >= 0:
         linedescriptor['type'] = LCD_LINETYPE.LCD_LINETYPE_ICONTEXT
@@ -498,6 +512,10 @@ class LcdBase():
       #parse the progressbar infolabel by ourselfs!
       if self.m_lcdMode[mode][inLine]['type'] == LCD_LINETYPE.LCD_LINETYPE_PROGRESS:
         # get playtime and duration and convert into seconds
+        percent = InfoLabel_GetProgressPercent()
+        pixelsWidth = self.SetProgressBar(percent, self.m_lcdMode[mode][inLine]['endx'])
+        line = "p" + str(pixelsWidth)
+      elif self.m_lcdMode[mode][inLine]['type'] == LCD_LINETYPE.LCD_LINETYPE_PROGRESSTIME:
         percent = InfoLabel_GetProgressPercent()
         pixelsWidth = self.SetProgressBar(percent, self.m_lcdMode[mode][inLine]['endx'])
         line = "p" + str(pixelsWidth)
