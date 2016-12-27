@@ -1,3 +1,5 @@
+2.7.0
+- Added support for the Futaba TOSD-5711BB VFDisplay on Elonex Artisan/Fujitsu Scaleo/FIC Spectra Media Centre PCs
 2.6.0 (Helix)
 - Initial version for Kodi Helix
 - Fix retrieval of application mute state

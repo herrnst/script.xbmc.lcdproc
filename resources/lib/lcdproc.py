@@ -41,6 +41,7 @@ from lcdbase import *
 
 from lcdproc_extra_imon import *
 from lcdproc_extra_mdm166a import *
+from lcdproc_extra_futaba import *
 
 from infolabels import *
 
@@ -238,7 +239,8 @@ class LCDProc(LcdBase):
     rematch_imon = "SoundGraph iMON(.*)LCD"
     rematch_mdm166a = "Targa(.*)mdm166a"
     rematch_imonvfd = "Soundgraph(.*)VFD"
-    
+    rematch_futaba = "Futaba TOSD-5711BB"
+
     bUseExtraIcons = settings_getUseExtraElements()
 
     # Never cause script failure/interruption by this! This is totally optional!
@@ -270,6 +272,11 @@ class LCDProc(LcdBase):
 
       elif re.match(rematch_imonvfd, reply):
         log(xbmc.LOGNOTICE, "SoundGraph iMON IR/VFD detected")
+
+      elif re.match(rematch_futaba, reply):
+        log(xbmc.LOGNOTICE, "Futaba TOSD-5711BB LED detected")
+        if bUseExtraIcons:
+          self.m_cExtraIcons = LCDproc_extra_futaba()
 
       if self.m_cExtraIcons is not None:
         self.m_cExtraIcons.Initialize()
