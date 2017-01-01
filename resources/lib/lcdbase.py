@@ -66,11 +66,16 @@ class LCD_LINETYPE:
   LCD_LINETYPE_PROGRESS  = "progressbar"
   LCD_LINETYPE_ICONTEXT  = "icontext"
   LCD_LINETYPE_BIGSCREEN = "bigscreen"
+  LCD_LINETYPE_FIXTEXT = "fixtext"
 
 class LCD_LINEALIGN:
   LCD_LINEALIGN_LEFT   = 0
   LCD_LINEALIGN_CENTER = 1
   LCD_LINEALIGN_RIGHT  = 2
+
+class FIXTEXT_ALIGN:
+  FIXTEXT_ALIGN_LEFT  = 0
+  FIXTEXT_ALIGN_RIGHT = 2
 
 g_dictEmptyLineDescriptor = {} 
 g_dictEmptyLineDescriptor['type'] = LCD_LINETYPE.LCD_LINETYPE_TEXT
@@ -78,6 +83,8 @@ g_dictEmptyLineDescriptor['startx'] = int(0)
 g_dictEmptyLineDescriptor['text'] = str("")
 g_dictEmptyLineDescriptor['endx'] = int(0)
 g_dictEmptyLineDescriptor['align'] = LCD_LINEALIGN.LCD_LINEALIGN_LEFT
+g_dictEmptyLineDescriptor['fixtext', 'text'] = str("")
+g_dictEmptyLineDescriptor['fixtext', 'align'] = FIXTEXT_ALIGN.FIXTEXT_ALIGN_LEFT
 
 class LcdBase():
   def __init__(self):
@@ -424,6 +431,33 @@ class LcdBase():
           linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.PlayIcon]") + '\s?', ' ', linetext).strip()
         else:
           linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.PlayIcon]") + '\s?', ' ', linetext, flags=re.IGNORECASE).strip()
+
+      # fixed text plus scrolling
+      elif linetext.lower().find("$fix[") >= 0:
+        linedescriptor['type'] = LCD_LINETYPE.LCD_LINETYPE_FIXTEXT
+        # check for alignment labels
+        if linetext.lower().find("$fix[alignleft]") >= 0:
+          linedescriptor['fixtext', 'align'] = FIXTEXT_ALIGN.FIXTEXT_ALIGN_LEFT
+        if linetext.lower().find("$fix[alignright]") >= 0:
+          linedescriptor['fixtext', 'align'] = FIXTEXT_ALIGN.FIXTEXT_ALIGN_RIGHT
+
+        if self.m_vPythonVersion < (2, 7):
+          linedescriptor['text'] = re.sub(r'\s?' + re.escape("$FIX[AlignLeft]") + '\s?', ' ', linetext).strip()
+          linedescriptor['text'] = re.sub(r'\s?' + re.escape("$FIX[AlignRight]") + '\s?', ' ', linedescriptor['text']).strip()
+        else:
+          linedescriptor['text'] = re.sub(r'\s?' + re.escape("$FIX[AlignLeft]") + '\s?', ' ', linetext, flags=re.IGNORECASE).strip()
+          linedescriptor['text'] = re.sub(r'\s?' + re.escape("$FIX[AlignRight]") + '\s?', ' ', linedescriptor['text'], flags=re.IGNORECASE).strip()
+
+        linedescriptor['fixtext', 'text'] = linedescriptor['text'][(linedescriptor['text'].lower().find("$fix[") + len("$fix[")) : (linedescriptor['text'].lower().find("]", linedescriptor['text'].lower().find("$fix[")))]
+        if linedescriptor['fixtext', 'align'] == FIXTEXT_ALIGN.FIXTEXT_ALIGN_LEFT:
+          linedescriptor['startx'] = int(len(linedescriptor['fixtext', 'text']) + 2)
+        elif linedescriptor['fixtext', 'align'] == FIXTEXT_ALIGN.FIXTEXT_ALIGN_RIGHT:
+          linedescriptor['endx'] = int(self.GetColumns() - len(linedescriptor['fixtext', 'text']) - 1)
+        # support Python < 2.7 (e.g. Debian Squeeze)
+        if self.m_vPythonVersion < (2, 7):
+          linedescriptor['text'] = re.sub(r'\s?' + re.escape("$FIX[") + re.escape(linedescriptor['fixtext', 'text']) + re.escape("]") + '\s?', ' ', linedescriptor['text']).strip()
+        else:
+          linedescriptor['text'] = re.sub(r'\s?' + re.escape("$FIX[") + re.escape(linedescriptor['fixtext', 'text']) + re.escape("]") + '\s?', ' ', linedescriptor['text'], flags=re.IGNORECASE).strip()
 
       # standard (scrolling) text line
       else:

@@ -169,6 +169,9 @@ class LCDProc(LcdBase):
       # Progress bars
       strInitCommandList += "widget_add xbmc lineProgress" + str(i) + " hbar\n"
 
+      # Fixed text plus scrolling
+      strInitCommandList += "widget_add xbmc lineFixText" + str(i) + " string\n"
+
       # Reset bars to zero
       strInitCommandList += "widget_set xbmc lineProgress" + str(i) + " 0 0 0\n"
 
@@ -541,6 +544,7 @@ class LCDProc(LcdBase):
     self.m_strSetLineCmds += "widget_set xbmc lineIcon%i 0 0 BLOCK_FILLED\n" % (iLine)
     self.m_strSetLineCmds += "widget_set xbmc lineProgress%i 0 0 0\n" % (iLine)
     self.m_strSetLineCmds += "widget_set xbmc lineScroller%i 1 %i %i %i m 1 \"\"\n" % (iLine, iLine, self.m_iColumns, iLine)
+    self.m_strSetLineCmds += "widget_set xbmc lineFixText%i 1 %i \"\"\n" % (iLine, iLine)
 
   def SetLine(self, mode, iLine, strLine, dictDescriptor, bForce):
     if self.m_bStop or not self.tnsocket:
@@ -605,7 +609,8 @@ class LCDProc(LcdBase):
           elif dictDescriptor['align'] == LCD_LINEALIGN.LCD_LINEALIGN_CENTER:
             iStartX += int(iSpaces / 2)
 
-        self.m_strSetLineCmds += "widget_set xbmc lineScroller%i %i %i %i %i %s %i \"%s\"\n" % (ln, iStartX, ln, self.m_iColumns, ln, strScrollMode, iScrollSpeed, re.escape(strLineLong))
+        # insert dictDescriptor['endx'] to enable scolling with right-aligned fixed text
+        self.m_strSetLineCmds += "widget_set xbmc lineScroller%i %i %i %i %i %s %i \"%s\"\n" % (ln, iStartX, ln, dictDescriptor['endx'], ln, strScrollMode, iScrollSpeed, re.escape(strLineLong))
 
       # cache contents
       self.m_strLineText[iLine] = strLineLong
@@ -615,6 +620,13 @@ class LCDProc(LcdBase):
         self.m_strLineIcon[iLine] = self.m_strIconName
         
         self.m_strSetLineCmds += "widget_set xbmc lineIcon%i 1 %i %s\n" % (ln, ln, self.m_strIconName)
+
+    if dictDescriptor['type'] == LCD_LINETYPE.LCD_LINETYPE_FIXTEXT:
+    # display left-aligned if startx > 1, else right-aligned        
+      if dictDescriptor['fixtext', 'align'] == FIXTEXT_ALIGN.FIXTEXT_ALIGN_LEFT:
+        self.m_strSetLineCmds += "widget_set xbmc lineFixText%i %i %i %s\n" % (ln, 1, ln, dictDescriptor['fixtext', 'text'])
+      elif dictDescriptor['fixtext', 'align'] == FIXTEXT_ALIGN.FIXTEXT_ALIGN_RIGHT:
+        self.m_strSetLineCmds += "widget_set xbmc lineFixText%i %i %i %s\n" % (ln, (dictDescriptor['endx']+2), ln, dictDescriptor['fixtext', 'text'])
 
   def ClearDisplay(self):
     log(xbmc.LOGDEBUG, "Clearing display contents")
