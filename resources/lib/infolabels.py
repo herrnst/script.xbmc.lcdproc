@@ -135,10 +135,18 @@ def InfoLabel_GetSystemTime():
   return ret[-8:]
 
 def InfoLabel_GetPlayerTime():
-  return InfoLabel_GetInfoLabel("Player.Time")
+  PlayerTime = InfoLabel_GetInfoLabel("Player.Time")
+  if (len(PlayerTime) > 7 or len(PlayerTime) == 5) and str(PlayerTime)[0] == '0':
+    return str(PlayerTime)[1:]
+  else:
+    return PlayerTime
 
 def InfoLabel_GetPlayerDuration():
-  return InfoLabel_GetInfoLabel("Player.Duration")
+  PlayerDuration =  InfoLabel_GetInfoLabel("Player.Duration")
+  if (len(PlayerDuration) > 7 or len(PlayerDuration) == 5) and str(PlayerDuration)[0] == '0':
+    return str(PlayerDuration)[1:]
+  else:
+    return PlayerDuration
 
 def InfoLabel_IsPlayerPlaying():
   return InfoLabel_GetBool("Player.Playing")
