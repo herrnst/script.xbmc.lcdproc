@@ -118,6 +118,12 @@ def InfoLabel_PlayingTVShow():
   else:
     return False
 
+def InfoLabel_PlayingMusicVideo():
+  if InfoLabel_PlayingVideo() and len(InfoLabel_GetInfoLabel("VideoPlayer.Artist")): 
+    return True
+  else:
+    return False
+
 def InfoLabel_PlayingAudio():
   return InfoLabel_GetBool("Player.HasAudio")
 
