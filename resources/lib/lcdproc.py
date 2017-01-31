@@ -569,6 +569,8 @@ class LCDProc(LcdBase):
 
     if dictDescriptor['type'] == LCD_LINETYPE.LCD_LINETYPE_BIGSCREEN:
       strLineLong = self.GetBigDigitTime(mode)
+    elif dictDescriptor['type'] == LCD_LINETYPE.LCD_LINETYPE_PROGRESS and self.m_bProgressbarTime:
+      strLineLong = InfoLabel_GetPlayerTime() + self.m_bProgressbarBlank * (self.m_iColumns - len(InfoLabel_GetPlayerTime()) - len(InfoLabel_GetPlayerDuration())) + InfoLabel_GetPlayerDuration()
     else:
       strLineLong = strLine
 
@@ -595,7 +597,12 @@ class LCDProc(LcdBase):
         self.SetBigDigits(strLineLong, bExtraForce)
       # progressbar line
       elif dictDescriptor['type'] == LCD_LINETYPE.LCD_LINETYPE_PROGRESS:
-        self.m_strSetLineCmds += "widget_set xbmc lineProgress%i %i %i %i\n" % (ln, iStartX, ln, self.m_iProgressBarWidth)
+        if self.m_bProgressbarTime:
+          # My codes is ugly but it works. Any improvement is welcome.  
+          self.m_strSetLineCmds += "widget_set xbmc lineProgress%i %i %i %i\n" % (ln, iStartX + len(InfoLabel_GetPlayerTime()), ln, self.m_iProgressBarWidth - int((len(InfoLabel_GetPlayerDuration()) + len(InfoLabel_GetPlayerTime())) * self.m_iProgressBarWidth / self.m_iColumns))
+          self.m_strSetLineCmds += "widget_set xbmc lineScroller%i %i %i %i %i %s %i \"%s\"\n" % (ln, iStartX, ln, self.m_iColumns, ln, strScrollMode, iScrollSpeed, re.escape(strLineLong))
+        else:
+          self.m_strSetLineCmds += "widget_set xbmc lineProgress%i %i %i %i\n" % (ln, iStartX, ln, self.m_iProgressBarWidth)
       # everything else (text, icontext)
       else:
         if len(strLineLong) < iMaxLineLen and dictDescriptor['align'] != LCD_LINEALIGN.LCD_LINEALIGN_LEFT:
