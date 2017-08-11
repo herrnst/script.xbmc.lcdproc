@@ -86,7 +86,10 @@ def getLcdMode():
   if navActive:
     ret = LCD_MODE.LCD_MODE_NAVIGATION
   elif screenSaver:
-    ret = LCD_MODE.LCD_MODE_SCREENSAVER
+    if playingMusic and not settings_getScreenSaverPlayingMusic():
+      ret = LCD_MODE.LCD_MODE_MUSIC
+    else:
+      ret = LCD_MODE.LCD_MODE_SCREENSAVER
   elif playingPVRTV:
     ret = LCD_MODE.LCD_MODE_PVRTV
   elif playingPVRRadio:
