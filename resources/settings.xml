@@ -10,6 +10,8 @@
     <setting id="charset" enable="eq(-1,true)" type="enum" label="32106" lvalues="32411|32412|32413|32414|32415|32416|32417" default="0" subsetting="true"/>
     <setting id="sep2" type="sep" />
     <setting id="useextraelements" type="bool" label="32107" default="true" />
+    <setting id="sep2" type="sep" />
+    <setting id="screensaverplayingmusic" type="bool" label="32108" default="true" />
   </category>
   <category label="32200">
     <setting label="32206" type="lsep" />

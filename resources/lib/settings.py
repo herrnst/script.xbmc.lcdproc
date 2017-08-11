@@ -51,6 +51,7 @@ global g_hideconnpopups
 global g_usealternatecharset
 global g_charset
 global g_useextraelements
+global g_screensaverplayingmusic
 
 #init globals with defaults
 def settings_initGlobals():
@@ -72,25 +73,27 @@ def settings_initGlobals():
   global g_usealternatecharset
   global g_charset
   global g_useextraelements
+  global g_screensaverplayingmusic
 
-  g_hostip              = "127.0.0.1"
-  g_hostport            = 13666
-  g_timer               = time.time()   
-  g_heartbeat           = False
-  g_scrolldelay         = 1
-  g_scrollmode          = "0"
-  g_settingsChanged     = True
-  g_dimonscreensaver    = False
-  g_dimonshutdown       = False
-  g_dimonvideoplayback  = False
-  g_dimonmusicplayback  = False
-  g_dimdelay            = 0
-  g_navtimeout          = 3
-  g_refreshrate         = 1
-  g_hideconnpopups      = True
-  g_usealternatecharset = False
-  g_charset             = "iso-8859-1"
-  g_useextraelements    = True
+  g_hostip                  = "127.0.0.1"
+  g_hostport                = 13666
+  g_timer                   = time.time()   
+  g_heartbeat               = False
+  g_scrolldelay             = 1
+  g_scrollmode              = "0"
+  g_settingsChanged         = True
+  g_dimonscreensaver        = False
+  g_dimonshutdown           = False
+  g_dimonvideoplayback      = False
+  g_dimonmusicplayback      = False
+  g_dimdelay                = 0
+  g_navtimeout              = 3
+  g_refreshrate             = 1
+  g_hideconnpopups          = True
+  g_usealternatecharset     = False
+  g_charset                 = "iso-8859-1"
+  g_useextraelements        = True
+  g_screensaverplayingmusic = True
 
 def settings_getHostIp():
   global g_hostip
@@ -107,6 +110,10 @@ def settings_getHeartBeat():
 def settings_getUseExtraElements():
   global g_useextraelements
   return g_useextraelements
+
+def settings_getScreenSaverPlayingMusic():
+  global g_screensaverplayingmusic
+  return g_screensaverplayingmusic
 
 def settings_getScrollDelay():
   global g_scrolldelay
@@ -266,6 +273,7 @@ def settings_handleLcdSettings():
   global g_hideconnpopups
   global g_usealternatecharset
   global g_charset
+  global g_screensaverplayingmusic
 
   g_settingsChanged = False
 
@@ -281,6 +289,7 @@ def settings_handleLcdSettings():
   hideconnpopups = __settings__.getSetting("hideconnpopups") == "true"
   usealternatecharset = __settings__.getSetting("usealternatecharset") == "true"
   charset = __settings__.getSetting("charset")
+  screensaverplayingmusic = __settings__.getSetting("screensaverplayingmusic") == "true"
 
   if g_scrolldelay != scrolldelay:
     g_scrolldelay = scrolldelay
@@ -332,6 +341,10 @@ def settings_handleLcdSettings():
 
   if g_charset != charset:
     g_charset = charset
+    g_settingsChanged = True
+
+  if g_screensaverplayingmusic != screensaverplayingmusic:
+    g_screensaverplayingmusic = screensaverplayingmusic
     g_settingsChanged = True
 
 #handles all settings and applies them as needed
