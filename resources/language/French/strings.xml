@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+<!--Settings-->
+  <!--Behaviour-->
+  <string id="32100">Comportement</string>
+  <string id="32101">Délai avant défilement du texte</string>
+  <string id="32102">Mode de défilement</string>
+  <string id="32103">Rémanence de l'écran de navigation (s)</string>
+  <string id="32104">Taux de rafraichissement (Hz)</string>
+  <string id="32105">Utiliser un jeu de caractères alternatif</string>
+  <string id="32106">Jeu de caractères</string>
+  <string id="32107">Gestion des éléments d'affichage supplémentaires (ex. icones)</string>
+  <string id="32108">Activation du mode économie d'écran lors de la lecture de musique</string>
+
+  <!--Backlight-->
+  <string id="32200">Rétro-éclairage</string>
+  <string id="32201">en mode économie d'écran</string>
+  <string id="32202">Diminuer lors de l'arrêt</string>
+  <string id="32203">lors de la lecture de vidéo ou en mode TV</string>
+  <string id="32204">lors de la lecture de musique ou en mode radio</string>
+  <string id="32205">Délai (s)</string>
+  <string id="32206">Diminuer/éteindre...</string>
+
+  <!--Connection-->
+  <string id="32300">Connexion</string>
+  <string id="32301">Utiliser un démon LCDProc distant</string>
+  <string id="32302">Adresse IP de LCDd</string>
+  <string id="32303">Port de LCDd</string>
+  <string id="32304">Afficher le symbole de pulsation</string>
+  <string id="32305">Cacher les notifications d'erreurs de connexion</string>
+
+  <!--Enum values: Scroll mode-->
+  <string id="32401">En boucle</string>
+  <string id="32402">Gauche/Droite</string>
+
+  <!--Enum values: Charsets-->
+  <string id="32411">ISO8859-1 (valeur d'origine)</string>
+  <string id="32412">ISO8859-15</string>
+  <string id="32413">KOI8-R</string>
+  <string id="32414">CP1251</string>
+  <string id="32415">ISO8859-5</string>
+  <string id="32416">HD44780-ROM A00</string>
+  <string id="32417">HD44780-ROM A02</string>
+
+  <!--Notifications-->
+  <string id="32500">Échec lors de la connection à LCDProc !</string>
+  <string id="32501">Connecté à LCDProc!</string>
+  <string id="32502">Attention ! Erreurs dans LCD.xml ou impossible de trouver LCD.xml !</string>
+  
+</strings>
