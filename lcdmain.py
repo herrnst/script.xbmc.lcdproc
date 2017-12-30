@@ -2,21 +2,21 @@
     XBMC LCDproc addon
     Copyright (C) 2012 Team XBMC
     Copyright (C) 2012 Daniel 'herrnst' Scheller
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
@@ -45,9 +45,9 @@ global g_lcdproc
 def initGlobals():
   global g_failedConnectionNotified
   global g_initialConnectAttempt
-  global g_lcdproc 
+  global g_lcdproc
 
-  g_failedConnectionNotified = False   
+  g_failedConnectionNotified = False
   g_initialConnectAttempt = True
   settings_initGlobals()
   g_lcdproc = LCDProc()
@@ -72,9 +72,10 @@ def HandleConnectionNotification(bConnectSuccess):
       g_failedConnectionNotified = True
 
 # returns mode identifier based on currently playing media/active navigation
-def getLcdMode():                 
+def getLcdMode():
   ret = LCD_MODE.LCD_MODE_GENERAL
 
+  volChanging = InfoLabel_IsVolumeChanging()
   navActive = InfoLabel_IsNavigationActive()
   screenSaver = InfoLabel_IsScreenSaverActive()
   playingVideo = InfoLabel_PlayingVideo()
@@ -83,7 +84,9 @@ def getLcdMode():
   playingPVRTV = InfoLabel_PlayingLiveTV()
   playingPVRRadio = InfoLabel_PlayingLiveRadio()
 
-  if navActive:
+  if volChanging:
+    ret = LCD_MODE.LCD_MODE_VOLCHANGING
+  elif navActive:
     ret = LCD_MODE.LCD_MODE_NAVIGATION
   elif screenSaver:
     ret = LCD_MODE.LCD_MODE_SCREENSAVER
@@ -97,7 +100,7 @@ def getLcdMode():
     ret = LCD_MODE.LCD_MODE_VIDEO
   elif playingMusic:
     ret = LCD_MODE.LCD_MODE_MUSIC
-   
+
   return ret
 
 def process_lcd():

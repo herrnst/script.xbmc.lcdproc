@@ -16,7 +16,7 @@
    <!-- centerbigdigits: (try to) align big numbers centered on the display (on/off) -->
    <!--centerbigdigits>off</centerbigdigits-->
 
-   <!-- disableplayindicatoronpause: turn off any playing indicator (extra stuff) when pausing playback (on/off) --> 
+   <!-- disableplayindicatoronpause: turn off any playing indicator (extra stuff) when pausing playback (on/off) -->
    <!--disableplayindicatoronpause>off</disableplayindicatoronpause-->
 
    <navigation>
@@ -44,7 +44,7 @@
       <line>$INFO[VideoPlayer.Title]</line>
       <line>$INFO[LCD.ProgressBar]</line>
       <line>Freemem: $INFO[System.FreeMemory]</line>
-   </tvshow> 
+   </tvshow>
    <general>
       <line>XBMC running...</line>
       <line>$INFO[System.Time] $INFO[System.Date]</line>
@@ -74,4 +74,8 @@
       <line>$INFO[LCD.PlayIcon] $INFO[Player.Time]/$INFO[Player.Duration]</line>
       <line>$INFO[LCD.ProgressBar]</line>
    </pvrradio>
+   <volchanging>
+      <line>Volume: $INFO[LCD.PlayerVolume]</line>
+      <line>$INFO[LCD.ProgressBar]</line>
+   </volchanging>
 </lcd>

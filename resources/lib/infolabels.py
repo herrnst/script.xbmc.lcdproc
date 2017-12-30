@@ -1,24 +1,24 @@
 '''
     XBMC LCDproc addon
     Copyright (C) 2012 Team XBMC
-    
+
     InfoLabel handling
     Copyright (C) 2012 Daniel 'herrnst' Scheller
-    
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
     (at your option) any later version.
-    
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-    
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
@@ -57,7 +57,7 @@ class WINDOW_IDS:
   WINDOW_PICTURES              = 10002
   WINDOW_DIALOG_VOLUME_BAR     = 10104
   WINDOW_DIALOG_KAI_TOAST      = 10107
-  
+
 g_StreamPrefixes = [ \
  "http", "https", "tcp",   "udp",    "rtp",  \
  "sdp",  "mms",   "mmst",  "mmsh",   "rtsp", \
@@ -113,7 +113,7 @@ def InfoLabel_PlayingVideo():
   return InfoLabel_GetBool("Player.HasVideo")
 
 def InfoLabel_PlayingTVShow():
-  if InfoLabel_PlayingVideo() and len(InfoLabel_GetInfoLabel("VideoPlayer.TVShowTitle")): 
+  if InfoLabel_PlayingVideo() and len(InfoLabel_GetInfoLabel("VideoPlayer.TVShowTitle")):
     return True
   else:
     return False
@@ -201,9 +201,17 @@ def InfoLabel_IsScreenSaverActive():
 def InfoLabel_IsMuted():
   return InfoLabel_GetBool("Player.Muted")
 
+def InfoLabel_IsVolumeChanging():
+  return InfoLabel_WindowIsActive(WINDOW_IDS.WINDOW_DIALOG_VOLUME_BAR)
+
 def InfoLabel_GetVolumePercent():
   volumedb = float(string.replace(string.replace(InfoLabel_GetInfoLabel("Player.Volume"), ",", "."), " dB", ""))
   return (100 * (60.0 + volumedb) / 60)
+
+def InfoLabel_GetPlayerVolumeText():
+  if InfoLabel_IsMuted():
+    return "[Mute]"
+  return InfoLabel_GetInfoLabel("Player.Volume");
 
 def InfoLabel_GetPlayerTimeSecs():
   currentTimeAr = InfoLabel_GetPlayerTime().split(":")
@@ -244,7 +252,7 @@ def InfoLabel_IsNavigationActive():
   if menu != g_InfoLabel_oldMenu or subMenu != g_InfoLabel_oldSubMenu or (g_InfoLabel_navTimer + navtimeout) > time.time():
     ret = True
     if menu != g_InfoLabel_oldMenu or subMenu != g_InfoLabel_oldSubMenu:
-      g_InfoLabel_navTimer = time.time()      
+      g_InfoLabel_navTimer = time.time()
     g_InfoLabel_oldMenu = menu
     g_InfoLabel_oldSubMenu = subMenu
 
