@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+<!--Settings-->
+  <!--Behaviour-->
+  <string id="32100">Zachowanie</string>
+  <string id="32101">Opóźnienie dla przewijania tekstu</string>
+  <string id="32102">Tryb przewijania</string>
+  <string id="32103">Czas wyświetlania informacji nawigacyjnych (s)</string>
+  <string id="32104">Częstotliwość odświeżania (Hz)</string>
+  <string id="32105">Użyj alternatywnego zestawu znaków</string>
+  <string id="32106">Zestaw znaków</string>
+  <string id="32107">Wsparcie dla dodatkowych elementów wyświetlających (np. ikon)</string>
+
+  <!--Backlight-->
+  <string id="32200">Podświetlenie</string>
+  <string id="32201">podczas działania wygaszacza ekrany</string>
+  <string id="32202">Przyciemnij przed wyłączeniem</string>
+  <string id="32203">podczas odtwarzania filmów wideo/TV</string>
+  <string id="32204">podczas odtwarzania muzyki/radia</string>
+  <string id="32205">Opóźnienie (s)</string>
+  <string id="32206">Przyciemnij/wyłącz:</string>
+
+  <!--Connection-->
+  <string id="32300">Połączenie</string>
+  <string id="32301">Podłącz do zdalnego serwera LCDProc</string>
+  <string id="32302">Adres IP serwera LCDd</string>
+  <string id="32303">Port serwera LCDd</string>
+  <string id="32304">Włącz tętno (heartbeat)</string>
+  <string id="32305">Nie pokazuj powiadomień o błędach połączenia</string>
+
+  <!--Enum values: Scroll mode-->
+  <string id="32401">Marquee</string>
+  <string id="32402">Lewo/Prawo</string>
+
+  <!--Enum values: Charsets-->
+  <string id="32411">ISO8859-1 (default)</string>
+  <string id="32412">ISO8859-15</string>
+  <string id="32413">KOI8-R</string>
+  <string id="32414">CP1251</string>
+  <string id="32415">ISO8859-5</string>
+  <string id="32416">HD44780-ROM A00</string>
+  <string id="32417">HD44780-ROM A02</string>
+
+  <!--Notifications-->
+  <string id="32500">Błąd połączenia z serwerem LCDProc!</string>
+  <string id="32501">Połączony z serwerem LCDProc!</string>
+  <string id="32502">Uwaga! Błędy w konfiguracji w pliku LCD.xml lub plik LCD.xml nie znaleziony!</string>
+
+</strings>
