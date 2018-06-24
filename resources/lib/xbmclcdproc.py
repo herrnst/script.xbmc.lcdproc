@@ -34,17 +34,23 @@ import xbmcgui
 from .common import *
 from .settings import *
 from .lcdproc import *
+from .kodibroker import *
 
 class XBMCLCDproc():
 
     ########
     # ctor
     def __init__(self):
+        # list of threads to keep track of (for termination/joining)
+        self._threads = []
+
+        # vars
         self._failedConnectionNotified = False
         self._initialConnectAttempt = True
 
-        # instantiate xbmc.Monitor object
-        self._xbmcMonitor = xbmc.Monitor()
+        # instantiate KodiBroker object (carries xbmc.Monitor)
+        self._xbmcMonitor = KodiBroker()
+        self._threads.append(self._xbmcMonitor)
 
         # instantiate Settings object
         self._Settings = Settings()
@@ -54,6 +60,9 @@ class XBMCLCDproc():
 
         # initialize components
         self._Settings.setup()
+
+        # start KodiBroker (xbmc.Monitor) thread
+        self._xbmcMonitor.start()
 
     ########
     # HandleConnectionNotification():
@@ -101,5 +110,14 @@ class XBMCLCDproc():
                     self._LCDproc.UpdateGUISettings()
 
                 self._LCDproc.Render(settingsChanged)
+
+        # signal cancel to all threads
+        for thr in self._threads:
+            thr.cancel()
+
+        # wait for threads to stop/join
+        for thr in self._threads:
+            thr.join()
+            log(LOGDEBUG, "Mainthread: stopped %s" % (thr))
 
         self._LCDproc.Shutdown()
