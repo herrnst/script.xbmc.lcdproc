@@ -20,6 +20,9 @@
    <!-- centerbigdigits: (try to) align big numbers centered on the display (on/off) -->
    <!--centerbigdigits>off</centerbigdigits-->
 
+   <!-- fourdigitbigclock: force using four digit clock (with big digits) on large (>= 20 cols) displays (on/off) -->
+   <!--fourdigitbigclock>off</fourdigitbigclock-->
+
    <!-- disableplayindicatoronpause: turn off any playing indicator (extra stuff) when pausing playback (on/off) -->
    <!--disableplayindicatoronpause>off</disableplayindicatoronpause-->
 
