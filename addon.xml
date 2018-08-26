@@ -14,7 +14,7 @@
     <disclaimer lang="en_GB">Works with LCDproc only. Other LCD services like LCD4Linux or iMON Manager on Win32 are not supported. No liability taken for damaged hardware and/or software caused by this addon.</disclaimer>
     <disclaimer lang="de_DE">Funktioniert ausschliesslich mit LCDproc. Andere LCD-Dienste wie LCD4Linux, iMON Manager unter Win32 u.a. sind nicht unterstützt. Keine Haftung für durch dieses Addon beschädigte Hard-/Software.</disclaimer>
     <disclaimer lang="fr_FR">Fonctionne uniquement avec LCDProc. Les services tels que LCD4Linux ou iMON Manager sur Win32 ne sont pas gérés. Nous déclinons toute responsabilité en cas de dégats survenus suite à l'utilisation de cette extension.</disclaimer>
-    <disclaimer lang="pl_PL">Działa wyłącznie we współpracy z LCDproc. Inne usługi LCD jak LCD4Linux lub iMON Manager dla Win3nie są obsługiwane. Nie ponosimy żadnej odpowiedzialności za uszkodzony sprzęt i/lub oprogramowanie spowodowane tym dodatkiem </disclaimer>
+    <disclaimer lang="pl_PL">Działa wyłącznie z LCDproc. Inne usługi LCD jak LCD4Linux lub iMON Manager dla Win32 nie są obsługiwane. Nie ponosimy żadnej odpowiedzialności za uszkodzony sprzęt i/lub oprogramowanie spowodowane tym dodatkiem.</disclaimer>
     <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
     <platform>all</platform>
     <website>https://github.com/lcdproc/lcdproc</website>
