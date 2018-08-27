@@ -313,7 +313,6 @@ class LcdBase():
 
         fourdigitbigclock = element.find("fourdigitbigclock")
         if fourdigitbigclock != None:
-          log(LOGWARNING, "fourdigitbigclock setting value: %s" % (fourdigitbigclock.text))
           if str(fourdigitbigclock.text).lower() in ["on", "true"]:
             self.m_bFourDigitBigClock = True
 
