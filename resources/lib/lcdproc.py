@@ -430,9 +430,9 @@ class LCDProc(LcdBase):
       if ret == "": # no usable timestring, e.g. not playing anything
         strSysTime = self.m_InfoLabels.GetSystemTime()
 
-        if self.m_iBigDigits >= 8: # return h:m:s
+        if self.m_iBigDigits >= 8 and self.m_bFourDigitBigClock == False: # return h:m:s
           ret = strSysTime
-        elif self.m_iBigDigits >= 5: # return h:m when display too small
+        elif self.m_iBigDigits >= 5: # return h:m when display too small or if configured so in LCD.xml
           ret = strSysTime[:5]
 
       return ret

@@ -79,6 +79,7 @@ class LcdBase():
     self.m_extraBars = [None] * (LCD_EXTRABARS_MAX + 1)
     self.m_bAllowEmptyLines = False
     self.m_bCenterBigDigits = False
+    self.m_bFourDigitBigClock = False
     self.m_bDisablePlayIndicatorOnPause = False
     self.m_bProgressbarSurroundings = False
     self.m_iDimOnPlayDelay = 0
@@ -306,6 +307,14 @@ class LcdBase():
         if centerbigdigits != None:
           if str(centerbigdigits.text).lower() in ["on", "true"]:
             self.m_bCenterBigDigits = True
+
+        # check for fourdigitbigclock setting
+        self.m_bFourDigitBigClock = False
+
+        fourdigitbigclock = element.find("fourdigitbigclock")
+        if fourdigitbigclock != None:
+          if str(fourdigitbigclock.text).lower() in ["on", "true"]:
+            self.m_bFourDigitBigClock = True
 
         # check for disableplayindicatoronpause setting
         self.m_bDisablePlayIndicatorOnPause = False
