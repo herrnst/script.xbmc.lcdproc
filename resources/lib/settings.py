@@ -132,6 +132,8 @@ class Settings():
                 ret = "hd44780-a00"
             elif self._charset == "6":
                 ret = "hd44780-a02"
+            elif self._charset == "7":
+                ret = "utf-8"
             else:
                 ret = "iso-8859-1"
 
