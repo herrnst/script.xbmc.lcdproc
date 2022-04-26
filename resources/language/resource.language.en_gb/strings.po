@@ -155,7 +155,11 @@ msgctxt "#32417"
 msgid "HD44780-ROM A02"
 msgstr ""
 
-# empty strings from id 32418 to 32420
+msgctxt "#32418"
+msgid "UTF-8"
+msgstr ""
+
+# empty strings from id 32419 to 32420
 # Enum values: System time format
 
 msgctxt "#32421"
