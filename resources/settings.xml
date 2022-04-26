@@ -7,7 +7,7 @@
     <setting id="refreshrate" type="slider" label="32104" option="int" default="1" range="1,20" />
     <setting id="sep1" type="sep" />
     <setting id="usealternatecharset" type="bool" label="32105" default="false" />
-    <setting id="charset" enable="eq(-1,true)" type="enum" label="32106" lvalues="32411|32412|32413|32414|32415|32416|32417" default="0" subsetting="true"/>
+    <setting id="charset" enable="eq(-1,true)" type="enum" label="32106" lvalues="32411|32412|32413|32414|32415|32416|32417|32418" default="0" subsetting="true"/>
     <setting id="sep2" type="sep" />
     <setting id="useextraelements" type="bool" label="32107" default="true" />
     <setting id="systimeformat" type="enum" label="32108" lvalues="32421|32422|32423|32424" default="0"/>
