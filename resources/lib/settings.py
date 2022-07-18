@@ -162,12 +162,15 @@ class Settings():
     def handleCriticalSettings(self):
         reconnect = False
 
+        remote           = KODI_ADDON_SETTINGS.getSetting("remotelcdproc") == "true"
         hostip           = KODI_ADDON_SETTINGS.getSetting("hostip")
         hostport         = int(KODI_ADDON_SETTINGS.getSetting("hostport"))
         heartbeat        = KODI_ADDON_SETTINGS.getSetting("heartbeat") == "true"
         useextraelements = KODI_ADDON_SETTINGS.getSetting("useextraelements") == "true"
 
         # server settings
+        if not remote:
+            hostip = "127.0.0.1"
         # we need to reconnect if networkaccess bool changes
         # or if network access is enabled and ip or port have changed
         if self._hostip != hostip or self._hostport != hostport or self._heartbeat != heartbeat:
