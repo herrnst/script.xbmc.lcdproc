@@ -366,7 +366,7 @@ class LcdBase():
       return
 
     # regex to determine any of $INFO[LCD.Time(Wide)21-44]
-    timeregex = r'' + re.escape('$INFO[LCD.') + 'Time((Wide)?\d?\d?)' + re.escape(']')
+    timeregex = r'' + re.escape('$INFO[LCD.') + r'Time((Wide)?\d?\d?)' + re.escape(']')
 
     for line in node.findall("line"):
       # initialize line with empty descriptor
@@ -414,7 +414,7 @@ class LcdBase():
       elif linetext.lower().find("$info[lcd.playicon]") >= 0:
         linedescriptor['type'] = LCD_LINETYPE.LCD_LINETYPE_ICONTEXT
         linedescriptor['startx'] = int(1 + self.m_iIconTextOffset) # icon widgets take 2 chars, so shift text offset (default: 2)
-        linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.PlayIcon]") + '\s?', ' ', linetext, flags=re.IGNORECASE).strip()
+        linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.PlayIcon]") + r'\s?', ' ', linetext, flags=re.IGNORECASE).strip()
 
       # standard (scrolling) text line
       else:
@@ -427,8 +427,8 @@ class LcdBase():
       if linetext.lower().find("$info[lcd.alignright]") >= 0:
         linedescriptor['align'] = LCD_LINEALIGN.LCD_LINEALIGN_RIGHT
 
-      linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.AlignCenter]") + '\s?', ' ', linedescriptor['text'], flags=re.IGNORECASE).strip()
-      linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.AlignRight]") + '\s?', ' ', linedescriptor['text'], flags=re.IGNORECASE).strip()
+      linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.AlignCenter]") + r'\s?', ' ', linedescriptor['text'], flags=re.IGNORECASE).strip()
+      linedescriptor['text'] = re.sub(r'\s?' + re.escape("$INFO[LCD.AlignRight]") + r'\s?', ' ', linedescriptor['text'], flags=re.IGNORECASE).strip()
 
       self.m_lcdMode[mode].append(linedescriptor)
 
@@ -475,7 +475,7 @@ class LcdBase():
     return ret
 
   def StripBBCode(self, strtext):
-    regexbbcode = "\[(?P<tagname>[0-9a-zA-Z_\-]+?)[0-9a-zA-Z_\- ]*?\](?P<content>.*?)\[\/(?P=tagname)\]"
+    regexbbcode = r"\[(?P<tagname>[0-9a-zA-Z_\-]+?)[0-9a-zA-Z_\- ]*?\](?P<content>.*?)\[\/(?P=tagname)\]"
     # precompile and remember regex to make sure re's caching won't cause accidential recompilation
     if not self.m_reBBCode:
       self.m_reBBCode = re.compile(regexbbcode)
@@ -494,7 +494,7 @@ class LcdBase():
     while True:
       loopcount = loopcount - 1
       try:
-        mangledline, replacements = re.subn(self.m_reBBCode, "\g<content>", mangledline)
+        mangledline, replacements = re.subn(self.m_reBBCode, r"\g<content>", mangledline)
       except:
         return mangledline
 
