@@ -264,7 +264,7 @@ class LCDProc(LcdBase):
       log(LOGDEBUG,"Reply: " + reply)
 
       # parse reply by regex
-      lcdinfo = re.match("^connect .+ protocol ([0-9\.]+) lcd wid (\d+) hgt (\d+) cellwid (\d+) cellhgt (\d+)$", reply)
+      lcdinfo = re.match(r"^connect .+ protocol ([0-9\.]+) lcd wid (\d+) hgt (\d+) cellwid (\d+) cellhgt (\d+)$", reply)
 
       # if regex didn't match, LCDproc is incompatible or something's odd
       if lcdinfo is None:
