@@ -6,7 +6,6 @@
 #
 
 import re
-import telnetlib
 import time
 
 import xbmc
@@ -32,8 +31,7 @@ class LCDProc(LcdBase):
     self.m_lastInitAttempt = 0
     self.m_initRetryInterval = INIT_RETRY_INTERVAL
     self.m_used = True
-    self.tn = telnetlib.Telnet()
-    self.tnsocket = None
+    self.m_socket = None
     self.m_timeLastSockAction = time.time()
     self.m_timeSocketIdleTimeout = 2
     self.m_strLineText = [None]*MAX_ROWS
@@ -50,6 +48,34 @@ class LCDProc(LcdBase):
 
     LcdBase.__init__(self, settings)
 
+  def socket_read_until_newline(self, searchstr, timeout):
+    if not self.m_socket:
+      return b""
+
+    data = bytearray()
+    start_time = time.time()
+
+    while True:
+      # Return current data on timeout
+      elapsed_time = time.time() - start_time
+      if elapsed_time > timeout:
+        break
+
+      # Read new data and break on disconnect (empty bytes object returned; timeout for recv is set on connect)
+      try:
+        chunk = self.m_socket.recv(1)
+      except TimeoutError:
+        chunk = b''
+      if not chunk:
+        break
+      data += chunk
+
+      # Break if searchstr is found
+      if searchstr in data:
+        break
+
+    return data
+
   def SendCommand(self, strCmd, bCheckRet):
     countcmds = strCmd.count(b'\n')
     sendcmd = strCmd
@@ -63,7 +89,7 @@ class LCDProc(LcdBase):
     try:
       # Send to server via raw socket to prevent telnetlib tampering with
       # certain chars (especially 0xFF -> telnet IAC)
-      self.tnsocket.sendall(sendcmd)
+      self.m_socket.sendall(sendcmd)
     except:
       # Something bad happened, abort
       log(LOGERROR, "SendCommand: Telnet exception - send")
@@ -78,7 +104,7 @@ class LCDProc(LcdBase):
       while True:
         try:
           # Read server reply
-          reply = self.tn.read_until(b"\n",3)
+          reply = self.socket_read_until_newline(b"\n", timeout=3)
         except:
           # (Re)read failed, abort
           log(LOGERROR, "SendCommand: Telnet exception - reread")
@@ -214,8 +240,8 @@ class LCDProc(LcdBase):
     # Never cause script failure/interruption by this! This is totally optional!
     try:
       # Retrieve driver name for additional functionality
-      self.tn.write(b"info\n")
-      reply = self.tn.read_until(b"\n",3).strip().decode("ascii")
+      self.m_socket.send(b"info\n")
+      reply = self.socket_read_until_newline(b"\n", timeout=3).strip().decode("ascii")
 
       # When the LCDd driver doesn't supply a valid string, inform and return
       if reply == "":
@@ -255,12 +281,14 @@ class LCDProc(LcdBase):
       port = self.m_Settings.getHostPort()
       log(LOGDEBUG,"Open " + str(ip) + ":" + str(port))
 
-      self.tn.open(ip, port)
+      self.m_socket = socket(AF_INET, SOCK_STREAM)
+      self.m_socket.connect((ip, port))
+      self.m_socket.settimeout(1)
       # Start a new session
-      self.tn.write(b"hello\n")
+      self.m_socket.send(b"hello\n")
 
       # Receive LCDproc data to determine row and column information
-      reply = self.tn.read_until(b"\n",3).decode("ascii")
+      reply = self.socket_read_until_newline(b"\n", timeout=3).decode("ascii")
       log(LOGDEBUG,"Reply: " + reply)
 
       # parse reply by regex
@@ -302,12 +330,6 @@ class LCDProc(LcdBase):
       log(LOGERROR,"Connect: Caught exception, aborting.")
       return False
 
-    # retrieve raw socket object
-    self.tnsocket = self.tn.get_socket()
-    if self.tnsocket is None:
-      log(LOGERROR, "Retrieval of socket object failed!")
-      return False
-
     if not self.SetupScreen():
       log(LOGERROR, "Screen setup failed!")
       return False
@@ -315,7 +337,7 @@ class LCDProc(LcdBase):
     return True
 
   def CloseSocket(self):
-    if self.tnsocket:
+    if self.m_socket:
       # no pyexceptions, please, we're disconnecting anyway
       try:
         # if we served extra elements, (try to) reset them
@@ -324,9 +346,9 @@ class LCDProc(LcdBase):
             log(LOGERROR, "CloseSocket(): Cannot clear extra icons")
 
         # do gracefully disconnect (send directly as we won't get any response on this)
-        self.tn.write(b"bye\n")
+        self.m_socket.send(b"bye\n")
         # and close socket afterwards
-        self.tn.close()
+        self.m_socket.close()
       except:
         # exception caught on this, so what? :)
         pass
@@ -335,12 +357,10 @@ class LCDProc(LcdBase):
     del self.m_cExtraIcons
     self.m_cExtraIcons = None
 
-    self.tnsocket = None
-    del self.tn
-    self.tn = telnetlib.Telnet()
+    self.m_socket = None
 
   def IsConnected(self):
-    if not self.tnsocket:
+    if not self.m_socket:
       return False
 
     # Ping only every SocketIdleTimeout seconds
@@ -354,7 +374,7 @@ class LCDProc(LcdBase):
     return True
 
   def SetBackLight(self, iLight):
-    if not self.tnsocket:
+    if not self.m_socket:
       return
     log(LOGDEBUG, "Switch Backlight to: " + str(iLight))
 
@@ -378,7 +398,7 @@ class LCDProc(LcdBase):
     self.m_bStop = True
 
   def Suspend(self):
-    if self.m_bStop or not self.tnsocket:
+    if self.m_bStop or not self.m_socket:
       return
 
     # Build command to suspend screen
@@ -390,7 +410,7 @@ class LCDProc(LcdBase):
       self.CloseSocket()
 
   def Resume(self):
-    if self.m_bStop or not self.tnsocket:
+    if self.m_bStop or not self.m_socket:
       return
 
     # Build command to resume screen
@@ -515,7 +535,7 @@ class LCDProc(LcdBase):
     self.m_bstrSetLineCmds += b"widget_set xbmc lineScroller%i 1 %i %i %i m 1 \"\"\n" % (iLine, iLine, self.m_iColumns, iLine)
 
   def SetLine(self, mode, iLine, strLine, dictDescriptor, bForce):
-    if self.m_bStop or not self.tnsocket:
+    if self.m_bStop or not self.m_socket:
       return
 
     if iLine < 0 or iLine >= int(self.m_iRows):
