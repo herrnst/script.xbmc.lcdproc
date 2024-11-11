@@ -61,7 +61,7 @@ class LCDProc(LcdBase):
 
     line, tmp, self.m_sockreadbuf = self.m_sockreadbuf.partition(separator)
 
-    return line + b"\n"
+    return line
 
   def SendCommand(self, strCmd, bCheckRet):
     countcmds = strCmd.count(b'\n')
@@ -113,10 +113,10 @@ class LCDProc(LcdBase):
       if not bCheckRet:
         continue # no return checking desired, so be fine
 
-      if strCmd == b'noop' and reply == b'noop complete\n':
+      if strCmd == b'noop' and reply == b'noop complete':
         continue # noop has special reply
 
-      if reply == b'success\n':
+      if reply == b'success':
         continue
 
       ret = False
