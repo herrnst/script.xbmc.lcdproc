@@ -32,6 +32,7 @@ class LCDProc(LcdBase):
     self.m_initRetryInterval = INIT_RETRY_INTERVAL
     self.m_used = True
     self.m_socket = None
+    self.m_sockreadbuf = b''
     self.m_timeLastSockAction = time.time()
     self.m_timeSocketIdleTimeout = 2
     self.m_strLineText = [None]*MAX_ROWS
@@ -48,33 +49,19 @@ class LCDProc(LcdBase):
 
     LcdBase.__init__(self, settings)
 
-  def socket_read_until_newline(self, searchstr, timeout):
+  def ReadUntil(self, separator):
     if not self.m_socket:
       return b""
 
-    data = bytearray()
-    start_time = time.time()
+    while separator not in self.m_sockreadbuf:
+      data = self.m_socket.recv(1024)
+      if not data:
+        raise EOFError
+      self.m_sockreadbuf += data
 
-    while True:
-      # Return current data on timeout
-      elapsed_time = time.time() - start_time
-      if elapsed_time > timeout:
-        break
+    line, tmp, self.m_sockreadbuf = self.m_sockreadbuf.partition(separator)
 
-      # Read new data and break on disconnect (empty bytes object returned; timeout for recv is set on connect)
-      try:
-        chunk = self.m_socket.recv(1)
-      except TimeoutError:
-        chunk = b''
-      if not chunk:
-        break
-      data += chunk
-
-      # Break if searchstr is found
-      if searchstr in data:
-        break
-
-    return data
+    return line + b"\n"
 
   def SendCommand(self, strCmd, bCheckRet):
     countcmds = strCmd.count(b'\n')
@@ -104,7 +91,7 @@ class LCDProc(LcdBase):
       while True:
         try:
           # Read server reply
-          reply = self.socket_read_until_newline(b"\n", timeout=3)
+          reply = self.ReadUntil(b"\n")
         except:
           # (Re)read failed, abort
           log(LOGERROR, "SendCommand: Telnet exception - reread")
@@ -241,7 +228,7 @@ class LCDProc(LcdBase):
     try:
       # Retrieve driver name for additional functionality
       self.m_socket.send(b"info\n")
-      reply = self.socket_read_until_newline(b"\n", timeout=3).strip().decode("ascii")
+      reply = self.ReadUntil(b"\n").strip().decode("ascii")
 
       # When the LCDd driver doesn't supply a valid string, inform and return
       if reply == "":
@@ -282,13 +269,15 @@ class LCDProc(LcdBase):
       log(LOGDEBUG,"Open " + str(ip) + ":" + str(port))
 
       self.m_socket = socket(AF_INET, SOCK_STREAM)
+      self.m_socket.settimeout(15)
       self.m_socket.connect((ip, port))
-      self.m_socket.settimeout(1)
+      self.m_socket.settimeout(3)
+
       # Start a new session
       self.m_socket.send(b"hello\n")
 
       # Receive LCDproc data to determine row and column information
-      reply = self.socket_read_until_newline(b"\n", timeout=3).decode("ascii")
+      reply = self.ReadUntil(b"\n").decode("ascii")
       log(LOGDEBUG,"Reply: " + reply)
 
       # parse reply by regex
@@ -357,6 +346,7 @@ class LCDProc(LcdBase):
     del self.m_cExtraIcons
     self.m_cExtraIcons = None
 
+    self.m_sockreadbuf = b''
     self.m_socket = None
 
   def IsConnected(self):
