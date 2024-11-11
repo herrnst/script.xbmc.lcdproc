@@ -74,12 +74,11 @@ class LCDProc(LcdBase):
       sendcmd += b"\n"
 
     try:
-      # Send to server via raw socket to prevent telnetlib tampering with
-      # certain chars (especially 0xFF -> telnet IAC)
+      # Send commands to LCDproc server
       self.m_socket.sendall(sendcmd)
-    except:
+    except Exception as ex:
       # Something bad happened, abort
-      log(LOGERROR, "SendCommand: Telnet exception - send")
+      log(LOGERROR, "SendCommand(): Caught %s on m_socket.sendall()" % type(ex))
       return False
 
     # Update last socketaction timestamp
@@ -92,9 +91,9 @@ class LCDProc(LcdBase):
         try:
           # Read server reply
           reply = self.ReadUntil(b"\n")
-        except:
+        except Exception as ex:
           # (Re)read failed, abort
-          log(LOGERROR, "SendCommand: Telnet exception - reread")
+          log(LOGERROR, "SendCommand(): Caught %s when reading back response(s)" % type(ex))
           return False
 
         # Skip these messages
@@ -273,6 +272,11 @@ class LCDProc(LcdBase):
       self.m_socket.connect((ip, port))
       self.m_socket.settimeout(3)
 
+    except Exception as ex:
+      log(LOGERROR, "Connect(): Caught %s on initial connect, aborting" % type(ex))
+      return False
+
+    try:
       # Start a new session
       self.m_socket.send(b"hello\n")
 
@@ -315,8 +319,8 @@ class LCDProc(LcdBase):
       # (might override e.g. m_iBigDigits!)
       self.DetermineExtraSupport()
 
-    except:
-      log(LOGERROR,"Connect: Caught exception, aborting.")
+    except Exception as ex:
+      log(LOGERROR,"Connect(): Caught %s during hello/info phase, aborting." % type(ex))
       return False
 
     if not self.SetupScreen():
